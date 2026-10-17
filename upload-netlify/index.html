@@ -1,0 +1,2894 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kwitansi Masuda Kost</title>
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#1a4560">
+<script>
+  // Terapkan tema pilihan sebelum halaman digambar (mencegah kedip terang)
+  (function () {
+    try {
+      var t = localStorage.getItem("kwmasuda.tema");
+      if (t === "terang" || t === "gelap") document.documentElement.setAttribute("data-tema", t);
+    } catch (e) { /* penyimpanan diblokir: ikuti perangkat */ }
+  })();
+</script>
+<style>
+  /* Tema: data-tema="terang" | "gelap" di <html>; tanpa atribut = ikuti perangkat.
+     Kwitansi (.kw) sengaja tidak memakai token ini: selalu putih seperti kertas. */
+  :root {
+    --primary: #1a4560;        /* teks/ikon aksen */
+    --primary-bg: #1a4560;     /* latar tombol utama */
+    --primary-bg-hover: #12334a;
+    --primary-dark: #12334a;   /* label form */
+    --on-primary: #ffffff;
+    --bg: #f3f5f8;
+    --card: #ffffff;
+    --field: #ffffff;
+    --text: #1f2933;
+    --muted: #6b7785;
+    --border: #cfd6de;
+    --line: #e5e9ee;
+    --soft: #eef2f6;
+    --soft-hover: #d8e2ea;
+    --focus: #8fb3cc;
+    --danger: #b42318;
+    --danger-soft: #fdecea;
+    --ok: #1e7a46;
+    --ok-soft: #e6f4ea;
+    --ok-line: #b7e1c3;
+    --warn: #b25000;
+    --warn-soft: #fff1e6;
+    --warn-line: #ffd8a8;
+    --sa: #4527a0;
+    --sa-soft: #ede7f6;
+    --wa: #1f9d55;
+    --wa-hover: #17834a;
+    --muted-strike: #9aa5b1;
+    --shadow: 0 2px 10px rgba(0, 0, 0, .06);
+    --overlay: rgba(15, 30, 45, .45);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-tema="terang"]) {
+      --primary: #8cc4e6; --primary-bg: #2b6a90; --primary-bg-hover: #357aa3; --primary-dark: #b9d7ea;
+      --on-primary: #ffffff; --bg: #0e171e; --card: #16222c; --field: #0f1a22; --text: #e3eaf0;
+      --muted: #93a4b1; --border: #2f4150; --line: #24333f; --soft: #1d2c38; --soft-hover: #263a49;
+      --focus: #4f8bb0; --danger: #f28b82; --danger-soft: #3b1f1f; --ok: #7fd3a1; --ok-soft: #173426;
+      --ok-line: #2b5a40; --warn: #f2b56b; --warn-soft: #3a2a16; --warn-line: #5c4320; --sa: #c3b2f2;
+      --sa-soft: #2b2440; --wa: #1c8a4b; --wa-hover: #22a058; --muted-strike: #66778a;
+      --shadow: 0 2px 10px rgba(0, 0, 0, .35); --overlay: rgba(0, 0, 0, .6); color-scheme: dark;
+    }
+  }
+  :root[data-tema="gelap"] {
+    --primary: #8cc4e6; --primary-bg: #2b6a90; --primary-bg-hover: #357aa3; --primary-dark: #b9d7ea;
+    --on-primary: #ffffff; --bg: #0e171e; --card: #16222c; --field: #0f1a22; --text: #e3eaf0;
+    --muted: #93a4b1; --border: #2f4150; --line: #24333f; --soft: #1d2c38; --soft-hover: #263a49;
+    --focus: #4f8bb0; --danger: #f28b82; --danger-soft: #3b1f1f; --ok: #7fd3a1; --ok-soft: #173426;
+    --ok-line: #2b5a40; --warn: #f2b56b; --warn-soft: #3a2a16; --warn-line: #5c4320; --sa: #c3b2f2;
+    --sa-soft: #2b2440; --wa: #1c8a4b; --wa-hover: #22a058; --muted-strike: #66778a;
+    --shadow: 0 2px 10px rgba(0, 0, 0, .35); --overlay: rgba(0, 0, 0, .6); color-scheme: dark;
+  }
+  /* Logo navy dibuat terang di tema gelap (bukan logo di dalam kwitansi) */
+  :root[data-tema="gelap"] .logo-ui { filter: invert(1) hue-rotate(180deg) brightness(1.5); }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-tema="terang"]) .logo-ui { filter: invert(1) hue-rotate(180deg) brightness(1.5); }
+  }
+  .btn-tema { min-width: 112px; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Segoe UI", Roboto, Arial, sans-serif; font-size: 15px;
+  }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 16px; }
+  .apphead { display: flex; align-items: center; gap: 14px; margin: 4px 0 6px; flex-wrap: wrap; }
+  .apphead img { height: 46px; }
+  .apphead img:not([src]), .apphead img[src=""] { display: none; }
+  .apphead .t { font-size: 20px; font-weight: 800; color: var(--primary); }
+  .apphead .s { font-size: 13px; color: var(--muted); }
+  .apphead .user { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--muted); }
+  .demo-bar {
+    background: var(--warn-soft); color: var(--warn); border: 1px solid var(--warn-line); border-radius: 8px;
+    padding: 8px 12px; font-size: 13.5px; margin-bottom: 10px;
+  }
+  nav { display: flex; gap: 8px; margin: 8px 0 16px; flex-wrap: wrap; }
+  nav button {
+    border: 1px solid var(--border); background: var(--card); color: var(--primary);
+    padding: 9px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px;
+  }
+  nav button.active { background: var(--primary-bg); color: var(--on-primary); border-color: var(--primary-bg); }
+  .card {
+    background: var(--card); border-radius: 10px; padding: 24px;
+    box-shadow: var(--shadow); max-width: 470px; margin: 0 auto;
+  }
+  a { color: var(--primary); }
+  .card.wide { max-width: none; }
+  .stack { display: flex; flex-direction: column; gap: 18px; }
+  h2 { margin: 0 0 20px; text-align: center; color: var(--primary); font-size: 20px; }
+  h3 { margin: 0 0 12px; color: var(--primary); font-size: 16px; }
+  label { display: block; font-weight: 700; color: var(--primary-dark); font-size: 13.5px; margin: 14px 0 6px; }
+  label.inline { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+  label.inline input { width: auto; }
+  input, select, textarea {
+    width: 100%; padding: 10px 12px; font-size: 15px; border: 1px solid var(--border);
+    border-radius: 6px; background: var(--field); color: var(--text); font-family: inherit;
+  }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--focus); border-color: var(--primary); }
+  input::placeholder { color: var(--muted); opacity: .8; }
+  .hint { font-size: 12.5px; color: var(--muted); margin-top: 4px; min-height: 1em; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    border: 0; border-radius: 7px; padding: 10px 16px; font-weight: 700; cursor: pointer; font-size: 14px;
+    background: var(--primary-bg); color: var(--on-primary); text-decoration: none; white-space: nowrap;
+  }
+  .btn:hover { background: var(--primary-bg-hover); }
+  .btn:disabled { opacity: .6; cursor: wait; }
+  .btn.block { width: 100%; padding: 15px; font-size: 16px; margin-top: 22px; }
+  .btn.light { background: var(--soft); color: var(--primary); }
+  .btn.light:hover { background: var(--soft-hover); }
+  .btn.wa { background: var(--wa); color: #fff; }
+  .btn.wa:hover { background: var(--wa-hover); }
+  .btn.danger { background: var(--danger-soft); color: var(--danger); }
+  .btn.sm { padding: 6px 10px; font-size: 13px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .two { display: flex; gap: 8px; }
+  .two > div { flex: 1; min-width: 0; }
+  .toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; align-items: center; }
+  .toolbar input, .toolbar select { width: auto; flex: 1 1 160px; }
+  .table-wrap { overflow-x: auto; }
+  table.list { width: 100%; border-collapse: collapse; font-size: 14px; }
+  table.list th, table.list td { padding: 9px 8px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+  table.list th { background: var(--soft); color: var(--primary-dark); font-size: 13px; white-space: nowrap; }
+  table.list td.num { text-align: right; white-space: nowrap; }
+  table.list tr.batal td { color: var(--muted-strike); text-decoration: line-through; }
+  table.list tr.total-row td { font-weight: 700; background: var(--soft); }
+  table.list tr.batal td:last-child { text-decoration: none; }
+  .total-line { text-align: right; font-weight: 700; margin-top: 12px; font-size: 16px; }
+  .empty { text-align: center; color: var(--muted); padding: 30px 0; }
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 99px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+  .b-ok { background: var(--ok-soft); color: var(--ok); }
+  .b-warn { background: var(--warn-soft); color: var(--warn); }
+  .b-bad { background: var(--danger-soft); color: var(--danger); }
+  .b-mute { background: var(--soft); color: var(--muted); }
+  .toast {
+    position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
+    background: #1e7a46; color: #fff; padding: 12px 20px; border-radius: 8px; font-weight: 600;
+    box-shadow: 0 4px 14px rgba(0,0,0,.2); display: none; z-index: 20; max-width: 90vw;
+  }
+  .toast.err { background: #b42318; }
+  .logo-prev { max-height: 60px; margin-top: 8px; display: none; }
+  .wajib { color: var(--danger); }
+  body.peran-staf .hanya-sa { display: none !important; }
+  body:not(.peran-staf) .hanya-staf { display: none !important; }
+  .b-sa { background: var(--sa-soft); color: var(--sa); }
+  input.salah { border-color: var(--danger); outline-color: var(--danger); }
+  /* tanda tangan selalu dilihat di atas putih, seperti di kwitansi */
+  .ttd-box {
+    height: 110px; border: 1px dashed var(--border); border-radius: 8px; display: flex; align-items: center;
+    justify-content: center; color: #6b7785; font-size: 13px;
+    background: repeating-linear-gradient(45deg, #fafbfc, #fafbfc 8px, #f1f4f7 8px, #f1f4f7 16px);
+  }
+  .ttd-box img { max-height: 96px; max-width: 90%; }
+  .ttd-box img:not([src]), .ttd-box img[src=""] { display: none; }
+  .ttd-box img[src]:not([src=""]) + span { display: none; }
+  .hidden { display: none !important; }
+  #printArea { display: none; }
+  .pasca {
+    background: var(--ok-soft); border: 1px solid var(--ok-line); border-radius: 8px; padding: 10px 12px;
+    margin-bottom: 14px; font-size: 14px;
+  }
+  .pasca.peringatan { background: var(--warn-soft); border-color: var(--warn-line); }
+  .pasca .row { margin-top: 8px; }
+
+  /* Buat dokumen: form + pratinjau */
+  #tab-buat:not(.hidden) {
+    display: grid; grid-template-columns: minmax(0, 470px) minmax(0, 1fr); gap: 20px; align-items: start;
+  }
+  #tab-buat .card { margin: 0; }
+  .preview-card { position: sticky; top: 12px; }
+  .preview-box { border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: #fff; }
+
+  /* Dashboard */
+  .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-bottom: 18px; }
+  .stat { background: var(--card); border-radius: 10px; padding: 16px 18px; box-shadow: var(--shadow); }
+  .stat .k { font-size: 12.5px; color: var(--muted); font-weight: 600; }
+  .stat .v { font-size: 22px; font-weight: 800; color: var(--primary); margin-top: 4px; }
+  .stat .v.ok { color: var(--ok); }
+  .stat .v.bad { color: var(--danger); }
+
+  /* Penyewa */
+  #tab-penyewa:not(.hidden) {
+    display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: 20px; align-items: start;
+  }
+  #tab-penyewa .card { margin: 0; }
+
+  /* Login */
+  .login { max-width: 400px; margin: 8vh auto 0; text-align: center; }
+  .login img { height: 90px; margin-bottom: 6px; }
+  .login form { text-align: left; }
+  .err-box { color: var(--danger); font-size: 13.5px; margin-top: 10px; min-height: 1em; }
+
+  @media (max-width: 900px) {
+    #tab-buat:not(.hidden), #tab-penyewa:not(.hidden) { grid-template-columns: minmax(0, 1fr); }
+    #tab-buat .card, #tab-penyewa .card { margin: 0 auto; width: 100%; }
+    .preview-card { position: static; }
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  /* ===== Kwitansi (format lama Masuda) ===== */
+  .kw {
+    font-family: Arial, Helvetica, sans-serif; color: #1f2933; background: #fff;
+    padding: 18px 22px 14px; position: relative; page-break-inside: avoid; break-inside: avoid;
+  }
+  .kw-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .kw-head .brand { display: flex; align-items: center; gap: 10px; }
+  .kw-head img { max-height: 54px; max-width: 110px; }
+  .kw-head .nm { font-size: 19px; font-weight: 800; color: #1a4560; text-transform: uppercase; }
+  .kw-head .ttl { text-align: right; }
+  .kw-head .ttl .t { font-size: 19px; font-weight: 800; color: #1a4560; }
+  .kw-head .ttl .s {
+    font-size: 9.5px; color: #555; letter-spacing: .5px; text-decoration: underline; text-transform: uppercase;
+  }
+  .kw-addr {
+    border: 1px dashed #4a7a99; margin-top: 2px;
+    padding: 6px 4px; font-size: 10px; text-align: center; color: #333;
+  }
+  .kw-line { border-top: 2px solid #1a4560; margin-top: 14px; }
+  .kw table.rinci {
+    width: 100%; border-collapse: collapse; font-size: 11.5px; margin-top: 16px; border-bottom: 1px solid #e3e8ed;
+  }
+  .kw table.rinci td { padding: 2.5px 0; vertical-align: top; }
+  .kw table.rinci td.l { width: 150px; font-weight: 700; color: #1a4560; }
+  .kw table.rinci td.c { width: 14px; font-weight: 700; }
+  .kw table.rinci td.st { text-align: right; font-weight: 800; white-space: nowrap; }
+  .kw .st-ok { color: #1e7a46; }
+  .kw .st-warn { color: #b26a00; }
+  .kw .st-info { color: #1f4e79; }
+  .kw .st-mute { color: #6b7280; }
+  .kw .wm {
+    position: absolute; inset: 0; overflow: hidden; display: flex; align-items: center; justify-content: center;
+    pointer-events: none; z-index: 0;
+  }
+  .kw .wm span {
+    transform: rotate(-14deg); font-size: 36px; font-weight: 900; color: #1a4560; opacity: .055;
+    white-space: nowrap; text-transform: uppercase; letter-spacing: 3px;
+  }
+  .kw-head, .kw-addr, .kw-line, .kw table.rinci, .kw-mid, .kw-sign, .kw-note { position: relative; z-index: 1; }
+  .kw .up { text-transform: uppercase; }
+  .kw .terbilang { font-style: italic; font-weight: 700; color: #1a4560; }
+  .kw-mid { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 16px; }
+  .kw .total {
+    border: 2px solid #1e7a46; background: #eef8f1; padding: 7px 18px; text-align: center; min-width: 46%;
+  }
+  .kw .total .a { font-size: 10px; font-weight: 700; color: #1a4560; }
+  .kw .total .b { font-size: 21px; font-weight: 800; color: #1a4560; margin: 1px 0; }
+  .kw .total .c { font-size: 10px; font-weight: 700; color: #1e7a46; }
+  .kw.inv .total { border-color: #d9480f; background: #fff4ec; }
+  .kw.inv .total .c { color: #b25000; }
+  .kw.batal .total { border-color: #9aa5b1; background: #f3f4f6; }
+  .kw .tgl { text-align: right; font-size: 11px; }
+  .kw .tgl b { display: block; margin-top: 6px; color: #1a4560; font-size: 10.5px; }
+  .kw-sign { display: flex; justify-content: space-between; margin-top: 16px; font-size: 10.5px; }
+  .kw-sign > div { width: 45%; text-align: center; position: relative; }
+  .kw-sign .instr { text-align: left; font-size: 10.5px; line-height: 1.6; color: #333; }
+  .kw-sign .lbl { font-weight: 700; color: #1a4560; }
+  .kw-sign .space { height: 56px; display: flex; align-items: center; justify-content: center; }
+  .kw-sign .space img { max-height: 56px; max-width: 150px; }
+  .kw-sign .nm { font-weight: 700; text-transform: uppercase; }
+  .kw .cap {
+    position: absolute; left: -62px; top: -10px; width: 172px; height: 92px;
+    transform: rotate(-11deg); opacity: .88; mix-blend-mode: multiply; pointer-events: none;
+  }
+  .kw-note {
+    display: flex; justify-content: space-between; gap: 12px; margin-top: 12px; padding-top: 6px;
+    border-top: 1px solid #e3e8ed; font-size: 8.5px; color: #7b8794;
+  }
+  .kw .copy { position: absolute; top: 2px; right: 22px; font-size: 9px; color: #888; }
+
+  /* Wadah pembuat PDF: selalu tata letak lebar, walau dibuat dari HP */
+  .kw-pdf { position: fixed; left: -10000px; top: 0; width: 760px; background: #fff; }
+  .kw-pdf .kw { padding: 18px 22px 14px; }
+  .kw-pdf .kw table.rinci td.l { width: 150px; }
+  .kw-pdf .kw-mid { flex-direction: row; align-items: center; }
+  .kw-pdf .kw .tgl { text-align: right; }
+  .kw-pdf .kw .cap { mix-blend-mode: normal; }
+
+  /* Jendela kirim WhatsApp */
+  .modal {
+    position: fixed; inset: 0; background: var(--overlay); z-index: 30;
+    display: flex; align-items: flex-start; justify-content: center; padding: 5vh 16px; overflow: auto;
+  }
+  .modal-card {
+    background: var(--card); border-radius: 12px; max-width: 460px; width: 100%; padding: 22px;
+    box-shadow: 0 10px 40px rgba(0,0,0,.25);
+  }
+  .modal-card h3 { font-size: 18px; margin-bottom: 6px; }
+  .langkah { border: 1px solid var(--line); border-radius: 8px; padding: 12px; margin-top: 12px; }
+  .langkah .judul { font-weight: 700; color: var(--primary-dark); margin-bottom: 6px; }
+  .langkah .btn { width: 100%; margin-top: 8px; }
+  .wa-ok { color: var(--ok); }
+  .wa-bad { color: var(--danger); }
+  .cut { border-top: 1px dashed #888; margin: 14px 0; text-align: center; font-size: 10px; color: #888; }
+
+  @media (max-width: 560px) {
+    .card { padding: 16px; }
+    .kw { padding: 14px 10px; }
+    .kw table.rinci td.l { width: 110px; }
+    .kw-mid { flex-direction: column; align-items: stretch; }
+    .kw .tgl { text-align: center; }
+    .stat .v { font-size: 18px; }
+  }
+
+  @media print {
+    @page { size: A4; margin: 10mm; }
+    body { background: #fff; }
+    #app, #loginView, .toast { display: none !important; }
+    #printArea { display: block; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== LOGIN ===================== -->
+<div id="loginView" class="wrap hidden">
+  <div class="card login">
+    <img id="loginLogo" class="logo-ui" alt="Logo Masuda Kost">
+    <h2>Masuk Admin</h2>
+    <form id="formLogin">
+      <label for="lEmail">Email:</label>
+      <input id="lEmail" type="email" autocomplete="username" required>
+      <label for="lPass">Password:</label>
+      <input id="lPass" type="password" autocomplete="current-password" required>
+      <button type="submit" class="btn block" id="btnLogin">Masuk</button>
+      <div class="err-box" id="loginErr"></div>
+      <div style="text-align:center;margin-top:6px"><a href="#" id="linkLupa">Lupa password?</a></div>
+      <div class="row" style="justify-content:center;margin-top:12px">
+        <a href="panduan.html" target="_blank" rel="noopener">📖 Panduan staf</a>
+        <button class="btn light sm btn-tema" type="button">🌗 Otomatis</button>
+      </div>
+    </form>
+
+    <form id="formLupa" class="hidden" style="text-align:left">
+      <p class="hint">Masukkan email login Anda. Link untuk membuat password baru akan dikirim ke email tersebut.</p>
+      <label for="lupaEmail">Email:</label>
+      <input id="lupaEmail" type="email" autocomplete="username" required>
+      <button type="submit" class="btn block" id="btnLupa">Kirim link reset password</button>
+      <div class="err-box" id="lupaInfo"></div>
+      <div style="text-align:center;margin-top:6px"><a href="#" class="linkKeLogin">← Kembali ke login</a></div>
+    </form>
+
+    <form id="formResetPw" class="hidden" style="text-align:left">
+      <p class="hint">Buat password baru untuk <b id="resetEmail"></b>.</p>
+      <label for="rpBaru">Password baru (min. 8 karakter):</label>
+      <input id="rpBaru" type="password" autocomplete="new-password" minlength="8" required>
+      <label for="rpUlang">Ulangi password baru:</label>
+      <input id="rpUlang" type="password" autocomplete="new-password" minlength="8" required>
+      <button type="submit" class="btn block" id="btnResetPw">Simpan password baru</button>
+      <div class="err-box" id="resetErr"></div>
+    </form>
+    <div id="setupBox" class="hidden" style="text-align:left">
+      <p class="hint">Database belum terhubung. Isi alamat & kunci Supabase (lihat PANDUAN-ONLINE.md),
+        atau coba dulu dalam mode demo.</p>
+      <label for="cUrl">Project URL:</label>
+      <input id="cUrl" placeholder="https://xxxx.supabase.co">
+      <label for="cKey">Anon public key:</label>
+      <input id="cKey" placeholder="eyJhbGciOi...">
+      <div class="row" style="margin-top:14px">
+        <button type="button" class="btn" id="btnSimpanKonfig">Hubungkan</button>
+        <button type="button" class="btn light" id="btnDemo">Coba Mode Demo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== APLIKASI ===================== -->
+<div id="app" class="wrap hidden">
+  <header class="apphead">
+    <img id="appLogo" class="logo-ui" alt="Logo">
+    <div><div class="t">Kwitansi Digital</div><div class="s" id="appNama"></div></div>
+    <div class="user"><span id="userNama"></span><span id="userPeran" class="badge"></span><button class="btn light sm btn-tema" type="button">🌗 Otomatis</button><a class="btn light sm" href="panduan.html" target="_blank" rel="noopener">📖 Panduan</a><button class="btn light sm" id="btnKeluar">Keluar</button></div>
+  </header>
+  <div class="demo-bar hidden" id="demoBar">
+    ⚠️ <b>MODE DEMO</b> — data hanya tersimpan di browser ini dan tidak terlihat oleh admin lain.
+    <a href="#" id="linkKeluarDemo">Keluar dari demo</a>
+  </div>
+  <nav>
+    <button data-tab="dashboard">📊 Dashboard</button>
+    <button data-tab="buat">📝 Buat Dokumen</button>
+    <button data-tab="riwayat">📚 Riwayat</button>
+    <button data-tab="mutasi">✅ Cek Mutasi</button>
+    <button data-tab="penyewa">👥 Penyewa</button>
+    <button data-tab="pengaturan">⚙️ Pengaturan</button>
+  </nav>
+
+  <!-- ===== DASHBOARD ===== -->
+  <section id="tab-dashboard" class="hidden">
+    <div class="toolbar">
+      <label for="dBulan" style="margin:0">Bulan:</label>
+      <input id="dBulan" type="month" style="flex:0 1 200px">
+      <button class="btn light" id="btnMuatDash">🔄 Muat ulang</button>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="k">Pemasukan bulan ini</div><div class="v ok" id="sMasuk">-</div></div>
+      <div class="stat"><div class="k">Dokumen dibuat</div><div class="v" id="sDok">-</div></div>
+      <div class="stat"><div class="k">Penyewa bulanan lunas</div><div class="v" id="sLunas">-</div></div>
+      <div class="stat"><div class="k">Perkiraan tunggakan</div><div class="v bad" id="sTunggak">-</div></div>
+    </div>
+    <div class="card wide">
+      <h3>Status Pembayaran Penyewa Bulanan</h3>
+      <div class="toolbar">
+        <select id="dFilter" style="flex:0 1 220px">
+          <option value="">Semua status</option>
+          <option value="belum">Belum bayar</option>
+          <option value="kurang">Kurang / DP</option>
+          <option value="lunas">Lunas</option>
+        </select>
+        <input id="dCari" placeholder="Cari nama / kamar…">
+      </div>
+      <div class="table-wrap">
+        <table class="list">
+          <thead><tr>
+            <th>Kamar</th><th>Penyewa</th><th>Tarif</th><th>Sudah Dibayar</th><th>Status</th><th></th>
+          </tr></thead>
+          <tbody id="dashBody"></tbody>
+        </table>
+      </div>
+      <div class="empty hidden" id="dashEmpty">
+        Belum ada penyewa bulanan aktif. Tambahkan di menu <b>👥 Penyewa</b>.
+      </div>
+    </div>
+
+    <div class="card wide hanya-sa" style="margin-top:18px">
+      <h3>👔 Rekap Uang Diterima per Staf <span class="badge b-mute">Superadmin</span></h3>
+      <p class="hint" style="margin-top:-6px">Berdasarkan "Diterima Oleh" pada kwitansi bulan terpilih (tidak termasuk invoice & kwitansi batal).
+        Kolom <b>Tunai</b> = uang yang seharusnya disetorkan staf ke pemilik.</p>
+      <div class="table-wrap">
+        <table class="list">
+          <thead><tr>
+            <th>Staf</th><th>Kwitansi</th><th>Tunai</th><th>Transfer</th><th>Transfer belum dicek mutasi</th><th>Total diterima</th>
+          </tr></thead>
+          <tbody id="rekapBody"></tbody>
+        </table>
+      </div>
+      <div class="empty hidden" id="rekapEmpty">Belum ada kwitansi di bulan ini.</div>
+    </div>
+  </section>
+
+  <!-- ===== BUAT ===== -->
+  <section id="tab-buat" class="hidden">
+    <form class="card" id="formDok" autocomplete="off">
+      <h2>📝 Buat Dokumen Baru</h2>
+      <div class="pasca hidden" id="pasca"></div>
+
+      <label for="pilihPenyewa">Pilih Penyewa Terdaftar (opsional):</label>
+      <select id="pilihPenyewa"><option value="">— Ketik manual / tamu baru —</option></select>
+      <div class="hint">Memilih penyewa akan mengisi nama, kamar, tarif & periode otomatis.</div>
+
+      <label for="jenis">Pilih Jenis Dokumen:</label>
+      <select id="jenis">
+        <option value="KW">Kwitansi Pembayaran</option>
+        <option value="DP">Kwitansi Uang Muka / Booking</option>
+        <option value="DEP">Kwitansi Deposit</option>
+        <option value="RF">Bukti Pengembalian Deposit</option>
+        <option value="INV">Invoice Tagihan</option>
+      </select>
+
+      <label for="sewa">Jenis Penyewaan:</label>
+      <select id="sewa">
+        <option value="HARIAN">Sewa Harian</option>
+        <option value="BULANAN">Sewa Bulanan</option>
+      </select>
+
+      <label for="nama">Nama Lengkap Penyewa <span class="wajib">*</span></label>
+      <input id="nama" placeholder="Contoh: Budi Santoso" required minlength="3" autocomplete="off">
+      <div class="hint">Orang yang menyewa kamar (tujuan pembayaran). Tulis lengkap sesuai KTP.</div>
+
+      <label for="nik">NIK Penyewa (16 digit):</label>
+      <input id="nik" inputmode="numeric" maxlength="16" autocomplete="off" placeholder="Contoh: 3201xxxxxxxxxxxx">
+      <div class="hint" id="nikHint">Sesuai KTP. Disimpan untuk arsip admin, tidak dicetak di kwitansi.</div>
+
+      <div id="penyetorWrap">
+        <label for="penyetor">Nama Lengkap Penyetor <span class="wajib">*</span></label>
+        <input id="penyetor" placeholder="Contoh: Hendra Santoso" minlength="3" autocomplete="off">
+        <div class="row" style="justify-content:space-between;margin-top:4px">
+          <div class="hint" style="flex:1">Orang yang membayar / menyetor uang (bisa berbeda dari penyewa, mis. orang tua).</div>
+          <button type="button" class="btn light sm" id="btnPenyetorSama">= Sama dengan penyewa</button>
+        </div>
+      </div>
+
+      <label for="hp">No. WhatsApp Penyewa (untuk kirim PDF):</label>
+      <input id="hp" inputmode="tel" placeholder="Contoh: 0812xxxxxxx">
+      <div class="hint" id="hpHint"></div>
+
+      <label for="keterangan">Keterangan Pembayaran:</label>
+      <input id="keterangan" placeholder="Contoh: Sewa Kos Bulan Oktober" required>
+
+      <label for="blok">Nomor Unit &amp; Kamar:</label>
+      <div class="two">
+        <div><select id="blok" title="Blok"></select><div class="hint">Blok</div></div>
+        <div><input id="unit" type="number" min="1" inputmode="numeric" placeholder="Contoh: 1" title="Nomor unit/rumah"><div class="hint">No. Unit</div></div>
+        <div><input id="noKamar" type="number" min="1" inputmode="numeric" placeholder="Contoh: 3" title="Nomor kamar"><div class="hint">No. Kamar</div></div>
+      </div>
+      <div class="hint" id="kodeHint">Contoh: Unit A1 kamar 3 → <b>A103</b></div>
+
+      <label for="mulai">Periode Sewa (opsional):</label>
+      <div class="two">
+        <div><input id="mulai" type="date" title="Tanggal mulai"><div class="hint">Mulai</div></div>
+        <div><input id="selesai" type="date" title="Tanggal selesai"><div class="hint">Selesai</div></div>
+      </div>
+
+      <label for="periode">Dicatat untuk Tagihan Bulan:</label>
+      <input id="periode" type="month">
+      <div class="hint">Dipakai dashboard untuk menghitung siapa yang sudah/belum bayar.</div>
+
+      <label for="nominal">Nominal Uang (Ketik angka saja):</label>
+      <input id="nominal" inputmode="numeric" placeholder="Contoh: 1500000" required>
+      <div class="hint" id="nominalHint"></div>
+
+      <label for="bank">Bank / E-wallet Pengirim:</label>
+      <input id="bank" list="daftarBank" autocomplete="off" placeholder="Contoh: BCA (kosongkan jika tunai)">
+      <datalist id="daftarBank">
+        <option>BCA</option><option>BRI</option><option>BNI</option><option>MANDIRI</option><option>BSI</option>
+        <option>CIMB NIAGA</option><option>PERMATA</option><option>DANAMON</option><option>BTN</option>
+        <option>SEABANK</option><option>BANK JAGO</option><option>BLU BCA DIGITAL</option><option>MUAMALAT</option>
+        <option>BJB</option><option>BANK SUMUT</option><option>OCBC</option><option>UOB</option>
+        <option>DANA</option><option>GOPAY</option><option>OVO</option><option>SHOPEEPAY</option><option>LINKAJA</option>
+      </datalist>
+      <div class="hint">Kosongkan jika pembayaran tunai.</div>
+
+      <label for="noRek">Nomor Rekening Pengirim:</label>
+      <input id="noRek" inputmode="numeric" maxlength="30" autocomplete="off" placeholder="Contoh: 1234567890">
+      <div class="hint" id="noRekHint">Angka saja. Untuk e-wallet isi nomor HP akunnya.</div>
+
+      <label for="rekening">Nama Rekening Pengirim:</label>
+      <input id="rekening" placeholder="Contoh: Amirah Inas">
+
+      <label for="waktu">Waktu Transfer (Biarkan kosong jika sekarang):</label>
+      <input id="waktu" type="datetime-local">
+
+      <label for="admin">Diterima Oleh (Admin):</label>
+      <input id="admin" placeholder="Contoh: Zilan" list="adminList" required>
+      <datalist id="adminList"></datalist>
+
+      <label for="status">Status Pembayaran:</label>
+      <select id="status">
+        <option value="LUNAS">LUNAS</option>
+        <option value="DP">DP</option>
+        <option value="BELUM LUNAS">BELUM LUNAS</option>
+        <option value="BELUM DIBAYAR">BELUM DIBAYAR</option>
+      </select>
+      <div class="hint">Status ini tercetak sebagai cap di kwitansi.</div>
+
+      <button type="submit" class="btn block" id="btnSimpanDok">💾 Simpan &amp; Cetak PDF</button>
+      <div class="hint" style="text-align:center;margin-top:8px">
+        Di jendela cetak, pilih printer atau <b>"Simpan sebagai PDF"</b>.
+      </div>
+    </form>
+    <div class="card wide preview-card">
+      <h2>👁️ Pratinjau Kwitansi</h2>
+      <div id="preview" class="preview-box"></div>
+      <div class="hint" style="text-align:center;margin-top:8px">
+        Pratinjau berubah otomatis saat form diisi. Nomor final diberikan saat disimpan.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RIWAYAT ===== -->
+  <section id="tab-riwayat" class="hidden">
+    <div class="card wide">
+      <h2>📚 Riwayat Dokumen</h2>
+      <div class="toolbar">
+        <input id="cari" placeholder="Cari nama, kamar, nomor…">
+        <input id="bulan" type="month" title="Filter bulan dibuat">
+        <select id="fJenis" style="flex:0 1 200px">
+          <option value="">Semua jenis</option>
+          <option value="KW">Kwitansi Pembayaran</option>
+          <option value="DP">Uang Muka / Booking</option>
+          <option value="DEP">Deposit</option>
+          <option value="RF">Pengembalian Deposit</option>
+          <option value="INV">Invoice Tagihan</option>
+        </select>
+        <button class="btn light" id="btnMuatRiwayat">🔄 Muat ulang</button>
+        <button class="btn light" id="btnExport">⬇️ Ekspor Excel (CSV)</button>
+      </div>
+      <div class="table-wrap">
+        <table class="list">
+          <thead><tr>
+            <th>No.</th><th>Tanggal</th><th>Nama</th><th>Kamar</th>
+            <th>Keterangan</th><th>Nominal</th><th>Status</th><th>Admin</th><th></th>
+          </tr></thead>
+          <tbody id="riwayatBody"></tbody>
+        </table>
+      </div>
+      <div class="empty hidden" id="riwayatEmpty">Belum ada dokumen.</div>
+      <div class="total-line" id="riwayatTotal"></div>
+    </div>
+  </section>
+
+  <!-- ===== CEK MUTASI ===== -->
+  <section id="tab-mutasi" class="hidden">
+    <div class="toolbar">
+      <label for="mBulan" style="margin:0">Bulan transfer:</label>
+      <input id="mBulan" type="month" style="flex:0 1 200px">
+      <select id="mFilter" style="flex:0 1 200px">
+        <option value="belum">Belum dicek</option>
+        <option value="sudah">Sudah dicek</option>
+        <option value="">Semua</option>
+      </select>
+      <input id="mCari" placeholder="Cari bank, nama pengirim, nominal, no…">
+      <button class="btn light" id="btnMuatMutasi">🔄 Muat ulang</button>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="k">Transfer masuk</div><div class="v" id="mJml">-</div></div>
+      <div class="stat"><div class="k">Total nominal</div><div class="v" id="mTotal">-</div></div>
+      <div class="stat"><div class="k">Sudah dicek</div><div class="v ok" id="mSudah">-</div></div>
+      <div class="stat"><div class="k">Belum dicek</div><div class="v bad" id="mBelum">-</div></div>
+    </div>
+    <div class="card wide">
+      <h3>Pencocokan dengan Mutasi Bank</h3>
+      <p class="hint" style="margin-top:-6px">Urut sesuai waktu transfer agar mudah disejajarkan dengan mutasi rekening.
+        Tekan <b>✓ Cocok</b> jika dana sudah terlihat di mutasi — nama admin & waktu dicatat otomatis.
+        Pembayaran tunai tidak ditampilkan.</p>
+      <div class="table-wrap">
+        <table class="list">
+          <thead><tr>
+            <th>Waktu Transfer</th><th>Bank &amp; Pengirim</th><th>Nominal</th><th>Kwitansi</th><th>Kamar</th><th>Status Mutasi</th><th></th>
+          </tr></thead>
+          <tbody id="mutasiBody"></tbody>
+        </table>
+      </div>
+      <div class="empty hidden" id="mutasiEmpty">Tidak ada transfer untuk filter ini.</div>
+    </div>
+  </section>
+
+  <!-- ===== PENYEWA ===== -->
+  <section id="tab-penyewa" class="hidden">
+    <form class="card" id="formPenyewa" autocomplete="off">
+      <h2 id="judulPenyewa">👥 Tambah Penyewa</h2>
+      <input type="hidden" id="pId">
+      <label for="pNama">Nama Lengkap Penyewa <span class="wajib">*</span></label>
+      <input id="pNama" required minlength="3" placeholder="Contoh: Budi Santoso">
+      <label for="pNik">NIK (16 digit):</label>
+      <input id="pNik" inputmode="numeric" maxlength="16" autocomplete="off" placeholder="Contoh: 3201xxxxxxxxxxxx">
+      <div class="hint" id="pNikHint">Sesuai KTP. Hanya terlihat oleh admin, tidak dicetak di kwitansi.</div>
+      <label for="pHp">No. WhatsApp:</label>
+      <input id="pHp" inputmode="tel" placeholder="Contoh: 0812xxxxxxx">
+      <div class="hint" id="pHpHint">Dipakai untuk kirim kwitansi PDF & pengingat lewat WhatsApp.</div>
+      <label for="pBlok">Nomor Unit &amp; Kamar:</label>
+      <div class="two">
+        <div><select id="pBlok"></select><div class="hint">Blok</div></div>
+        <div><input id="pUnit" type="number" min="1" required placeholder="1"><div class="hint">No. Unit</div></div>
+        <div><input id="pKamar" type="number" min="1" placeholder="3"><div class="hint">No. Kamar</div></div>
+      </div>
+      <label for="pSewa">Jenis Penyewaan:</label>
+      <select id="pSewa">
+        <option value="BULANAN">Sewa Bulanan</option>
+        <option value="HARIAN">Sewa Harian</option>
+      </select>
+      <label for="pTarif">Tarif Sewa (per bulan / per malam):</label>
+      <input id="pTarif" inputmode="numeric" placeholder="Contoh: 1500000">
+      <label for="pMasuk">Tanggal Masuk:</label>
+      <input id="pMasuk" type="date">
+      <label for="pCatatan">Catatan:</label>
+      <input id="pCatatan" placeholder="Contoh: Kontrak 6 bulan">
+      <label class="inline"><input type="checkbox" id="pAktif" checked> Masih aktif menyewa</label>
+      <button type="submit" class="btn block" id="btnSimpanPenyewa">💾 Simpan Penyewa</button>
+      <button type="button" class="btn light hidden" id="btnBatalEdit" style="width:100%;margin-top:8px">Batal edit</button>
+    </form>
+    <div class="card wide">
+      <h2>Daftar Penyewa</h2>
+      <div class="toolbar">
+        <input id="pCari" placeholder="Cari nama / kamar / HP…">
+        <label class="inline" style="margin:0"><input type="checkbox" id="pTampilNonaktif"> Tampilkan yang sudah keluar</label>
+      </div>
+      <div class="table-wrap">
+        <table class="list">
+          <thead><tr><th>Kamar</th><th>Nama</th><th>NIK</th><th>Sewa</th><th>Tarif</th><th>WA</th><th>Status</th><th></th></tr></thead>
+          <tbody id="penyewaBody"></tbody>
+        </table>
+      </div>
+      <div class="empty hidden" id="penyewaEmpty">Belum ada data penyewa.</div>
+    </div>
+  </section>
+
+  <!-- ===== PENGATURAN ===== -->
+  <section id="tab-pengaturan" class="hidden">
+    <div class="stack">
+      <form class="card" id="formSet">
+        <h2>⚙️ Pengaturan Kost</h2>
+        <div class="pasca peringatan hanya-staf">
+          🔒 Hanya <b>Superadmin</b> yang bisa mengubah pengaturan. Anda bisa melihatnya saja.</div>
+        <div class="hint" style="text-align:center">Pengaturan ini dipakai bersama oleh semua admin.</div>
+        <label for="sNama">Nama Kost:</label>
+        <input id="sNama" placeholder="Contoh: PT Masuda Kost Premium">
+        <label for="sNamaSingkat">Nama Singkat (untuk tanda tangan):</label>
+        <input id="sNamaSingkat" placeholder="Contoh: PT Masuda Kost">
+        <label for="sAlamat">Alamat:</label>
+        <textarea id="sAlamat" rows="2" placeholder="Jl. ..."></textarea>
+        <label for="sTelp">No. Telepon / WhatsApp:</label>
+        <input id="sTelp" placeholder="0812-xxxx-xxxx">
+        <label for="sKota">Kota (untuk tanggal tanda tangan):</label>
+        <input id="sKota" placeholder="Contoh: Bogor">
+        <label for="sRekTujuan">Rekening Penerima:</label>
+        <input id="sRekTujuan" placeholder="Contoh: BSI 1234567890 a.n PT Masuda Kost Premium">
+        <label for="sNomorAwal">Nomor Kwitansi Berikutnya Minimal:</label>
+        <input id="sNomorAwal" type="number" min="1" placeholder="Contoh: 151">
+        <div class="hint">Isi dengan nomor setelah kwitansi lama terakhir agar nomornya bersambung.</div>
+        <label for="sAwalanInv">Awalan Nomor Invoice:</label>
+        <input id="sAwalanInv" placeholder="Contoh: TAG" maxlength="10">
+        <label for="sNomorAwalInv">Nomor Invoice Berikutnya Minimal:</label>
+        <input id="sNomorAwalInv" type="number" min="1" placeholder="Contoh: 1">
+        <div class="hint" id="contohNo"></div>
+        <label for="sRangkap">Jumlah Rangkap per Cetak:</label>
+        <select id="sRangkap">
+          <option value="1">1 lembar</option>
+          <option value="2">2 rangkap (Penyewa + Arsip)</option>
+        </select>
+        <label for="sWatermark">Watermark Nama Kost di Latar:</label>
+        <select id="sWatermark">
+          <option value="ya">Tampilkan</option>
+          <option value="tidak">Sembunyikan</option>
+        </select>
+        <label for="sLogo">Logo:</label>
+        <input id="sLogo" type="file" accept="image/*">
+        <img id="logoPrev" class="logo-prev" alt="Logo">
+        <div class="row" style="margin-top:8px">
+          <button type="button" class="btn light sm hidden" id="btnHapusLogo">Hapus logo</button>
+          <button type="button" class="btn light sm" id="btnLogoBawaan">Pakai logo Masuda Kost</button>
+        </div>
+        <button type="submit" class="btn block" id="btnSimpanSet">💾 Simpan Pengaturan</button>
+      </form>
+
+      <div class="card" id="kartuTtd">
+        <h2>✍️ Tanda Tangan Saya</h2>
+        <p class="hint" id="ttdUntuk"></p>
+        <div class="ttd-box"><img id="ttdSaya" alt="Tanda tangan saya"><span id="ttdKosong">Belum ada tanda tangan</span></div>
+        <label for="fileTtd">Unggah foto tanda tangan:</label>
+        <input id="fileTtd" type="file" accept="image/*">
+        <div class="hint">Tanda tangan di <b>kertas putih polos</b> dengan tinta gelap, difoto terang & tegak.
+          Latar putih otomatis dibuat transparan. Tanda tangan ini dipakai di semua kwitansi yang
+          "Diterima Oleh" Anda — termasuk saat dicetak admin lain.</div>
+        <div class="row" style="margin-top:12px">
+          <button type="button" class="btn" id="btnSimpanTtd" disabled>💾 Simpan tanda tangan saya</button>
+          <button type="button" class="btn light" id="btnHapusTtdSaya">Hapus</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>🎨 Tampilan</h2>
+        <label for="pilihTema">Warna tampilan di perangkat ini:</label>
+        <select id="pilihTema">
+          <option value="otomatis">🌗 Otomatis — ikuti setelan HP/laptop</option>
+          <option value="terang">☀️ Terang</option>
+          <option value="gelap">🌙 Gelap</option>
+        </select>
+        <div class="hint">Hanya untuk perangkat ini. Kwitansi, PDF, dan hasil cetak selalu berlatar putih.</div>
+      </div>
+
+      <div class="card">
+        <h2>🔑 Ganti Password Saya</h2>
+        <label for="pwBaru">Password baru (min. 8 karakter):</label>
+        <input id="pwBaru" type="password" autocomplete="new-password" minlength="8">
+        <label for="pwUlang">Ulangi password baru:</label>
+        <input id="pwUlang" type="password" autocomplete="new-password" minlength="8">
+        <button type="button" class="btn block" id="btnGantiPw">Simpan password baru</button>
+      </div>
+
+      <div class="card hanya-sa">
+        <h2>⬆️ Impor Data Lama</h2>
+        <p class="hint">Pindahkan kwitansi yang sudah ada supaya nomornya bersambung dan masuk riwayat.
+          Nomor yang sudah ada di database akan dilewati (tidak dobel).</p>
+        <label for="fileImpor">Pilih file:</label>
+        <input id="fileImpor" type="file" accept=".csv,.json,.txt">
+        <div class="hint">
+          • <b>.json</b> = file "Unduh Cadangan" dari aplikasi offline (kwitansi-kost.html).<br>
+          • <b>.csv</b> = dari Excel (File → Save As → CSV). Kolom minimal: <b>No</b>, <b>Nama</b>, <b>Nominal</b>;
+          disarankan juga Tanggal, Kamar, Keterangan, Admin, Status.
+        </div>
+        <div id="imporPreview" class="hidden" style="margin-top:14px"></div>
+      </div>
+
+      <div class="card wide">
+        <h2>👥 Staf &amp; Admin</h2>
+        <div class="table-wrap">
+          <table class="list">
+            <thead><tr><th>Nama</th><th>Email</th><th>Peran</th><th>Status</th><th>Tanda tangan</th><th class="hanya-sa"></th></tr></thead>
+            <tbody id="daftarAdmin"></tbody>
+          </table>
+        </div>
+
+        <form id="formStaf" class="hanya-sa" autocomplete="off" style="max-width:470px;margin-top:18px">
+          <h3 id="judulStaf">➕ Tambah Staf Baru</h3>
+          <label for="stEmail">Email login staf:</label>
+          <input id="stEmail" type="email" required placeholder="contoh@gmail.com">
+          <label for="stNama">Nama (tercetak di kwitansi):</label>
+          <input id="stNama" required minlength="2" placeholder="Contoh: Dinda">
+          <label for="stPeran">Peran:</label>
+          <select id="stPeran">
+            <option value="staf">Staf — input pembayaran</option>
+            <option value="superadmin">Superadmin — akses penuh</option>
+          </select>
+          <div id="stPwWrap">
+            <label for="stPw">Password awal (min. 8 karakter):</label>
+            <input id="stPw" type="text" minlength="8" placeholder="Berikan ke staf, minta diganti setelah login">
+            <div class="hint">Kosongkan jika staf ini sudah punya akun login.</div>
+          </div>
+          <label class="inline"><input type="checkbox" id="stAktif" checked> Aktif (boleh login)</label>
+          <div class="row" style="margin-top:14px">
+            <button type="submit" class="btn" id="btnSimpanStaf">💾 Simpan staf</button>
+            <button type="button" class="btn light hidden" id="btnBatalStaf">Batal edit</button>
+          </div>
+          <p class="hint">Staf yang dinonaktifkan langsung kehilangan akses, tetapi kwitansi buatannya tetap tersimpan.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div id="printArea"></div>
+<div class="toast" id="toast"></div>
+
+<!-- ===== Jendela Kirim ke WhatsApp ===== -->
+<div class="modal hidden" id="waModal" role="dialog" aria-modal="true" aria-labelledby="waJudul">
+  <div class="modal-card">
+    <h3 id="waJudul">💬 Kirim Kwitansi ke WhatsApp</h3>
+    <div class="hint" id="waInfo"></div>
+    <label for="waNo">No. WhatsApp penyewa:</label>
+    <input id="waNo" inputmode="tel" placeholder="Contoh: 0812xxxxxxx">
+    <div class="hint" id="waNoHint"></div>
+    <label class="inline hidden" id="waSimpanWrap"><input type="checkbox" id="waSimpan" checked> Simpan nomor ini ke data penyewa</label>
+    <div class="hint" id="waStatus">⏳ Menyiapkan file PDF…</div>
+
+    <div class="langkah" id="waShareBox">
+      <div class="judul" id="waShareJudul">Kirim PDF langsung</div>
+      <div class="hint">Pilih <b>WhatsApp</b>, lalu pilih chat penyewa. PDF & pesan ikut terlampir.</div>
+      <button type="button" class="btn wa" id="waShare" disabled>📤 Kirim PDF ke WhatsApp</button>
+    </div>
+
+    <div class="langkah" id="waChatBox">
+      <div class="judul" id="waChatJudul">Buka chat penyewa + unduh PDF</div>
+      <div class="hint">Chat dengan nomor di atas terbuka beserta pesannya, dan PDF tersimpan di folder
+        <b>Download</b>. Lampirkan PDF di chat: seret file ke jendela chat (laptop) atau
+        📎 → <b>Dokumen</b> (HP).</div>
+      <button type="button" class="btn wa" id="waChat" disabled>💬 Buka chat &amp; unduh PDF</button>
+    </div>
+
+    <div class="row" style="margin-top:14px;justify-content:space-between">
+      <button type="button" class="btn light sm" id="waUnduh" disabled>⬇️ Unduh PDF saja</button>
+      <button type="button" class="btn light sm" id="waTutup">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // =====================================================================
+  //  KONFIGURASI DATABASE — isi setelah membuat project Supabase.
+  //  (Boleh dikosongkan; aplikasi akan meminta URL & key saat dibuka.)
+  // =====================================================================
+  const KONFIG = {
+    SUPABASE_URL: "https://unjkjqaryxjdpkdejwwb.supabase.co",
+    SUPABASE_ANON_KEY: "sb_publishable_oZw7nEnYmbHZ0KdzP5wx0w_-OcUkgPh"
+  };
+  const SUPABASE_JS = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js";
+  const HTML2PDF_JS = "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
+
+  // Logo Masuda Kost bawaan (WebP 480px, latar transparan)
+  const LOGO_MASUDA = "data:image/webp;base64,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";
+
+  const SET_BAWAAN = {
+    nama: "PT Masuda Kost Premium", namaSingkat: "PT Masuda Kost",
+    alamat: "Jl. Raya Cibanteng Kec. Ciampea, Kab. Bogor, Jawa Barat", telp: "0812-8395-6464",
+    kota: "Bogor", rangkap: "1", logo: "", logoDihapus: false, ttd: "",
+    rekTujuan: "BSI 7304951154 a.n PT Masuda Kost Premium", nomorAwal: 151,
+    awalanInv: "TAG", nomorAwalInv: 1, watermark: "ya"
+  };
+  const BLOK = ["A", "B", "C", "D", "E", "F", "G", "H", "J"];
+  const JENIS = {
+    KW: "KWITANSI PEMBAYARAN", DP: "KWITANSI UANG MUKA", DEP: "KWITANSI DEPOSIT",
+    RF: "BUKTI PENGEMBALIAN DEPOSIT", INV: "INVOICE TAGIHAN"
+  };
+  const SEWA = { HARIAN: "Sewa Harian", BULANAN: "Sewa Bulanan" };
+  // Jenis dokumen yang mencatat uang masuk → nama penyetor wajib
+  const BUTUH_PENYETOR = { KW: 1, DP: 1, DEP: 1 };
+
+  // ---------- Tema tampilan (per perangkat) ----------
+  const TEMA = {
+    otomatis: { label: "🌗 Otomatis", next: "terang" },
+    terang: { label: "☀️ Terang", next: "gelap" },
+    gelap: { label: "🌙 Gelap", next: "otomatis" }
+  };
+  function temaSekarang() {
+    const t = document.documentElement.getAttribute("data-tema");
+    return t === "terang" || t === "gelap" ? t : "otomatis";
+  }
+  function terapkanTema(t) {
+    if (!TEMA[t]) t = "otomatis";
+    if (t === "otomatis") document.documentElement.removeAttribute("data-tema");
+    else document.documentElement.setAttribute("data-tema", t);
+    try { if (t === "otomatis") localStorage.removeItem("kwmasuda.tema"); else localStorage.setItem("kwmasuda.tema", t); }
+    catch (e) { /* tetap berlaku sampai halaman ditutup */ }
+    const gelap = t === "gelap" || (t === "otomatis" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", gelap ? "#0e171e" : "#1a4560");
+    document.querySelectorAll(".btn-tema").forEach((b) => {
+      b.textContent = TEMA[t].label;
+      b.title = "Tampilan: " + TEMA[t].label.slice(3) + " — klik untuk ganti";
+    });
+    const sel = document.getElementById("pilihTema");
+    if (sel) sel.value = t;
+  }
+  document.querySelectorAll(".btn-tema").forEach((b) =>
+    b.addEventListener("click", () => terapkanTema(TEMA[temaSekarang()].next)));
+  document.getElementById("pilihTema").addEventListener("change", (e) => terapkanTema(e.target.value));
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => terapkanTema(temaSekarang()));
+  terapkanTema(temaSekarang());
+
+  // ---------- Util ----------
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const rupiah = (n) => "Rp " + Number(n || 0).toLocaleString("id-ID");
+  const BULAN = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+  const pad = (n, l) => String(n).padStart(l || 2, "0");
+  const angka = (v) => parseInt(String(v == null ? "" : v).replace(/\D/g, ""), 10) || 0;
+  function tglPanjang(d) { return d.getDate() + " " + BULAN[d.getMonth()] + " " + d.getFullYear(); }
+  function tglJam(d) { return tglPanjang(d) + ", " + pad(d.getHours()) + ":" + pad(d.getMinutes()) + " WIB"; }
+  function bulanIni() { const d = new Date(); return d.getFullYear() + "-" + pad(d.getMonth() + 1); }
+  function namaBulan(ym) { const p = String(ym || "").split("-"); return p.length === 2 ? BULAN[+p[1] - 1] + " " + p[0] : ""; }
+  function ymDari(iso) { const d = new Date(iso); return d.getFullYear() + "-" + pad(d.getMonth() + 1); }
+  function isoTgl(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function tglISO(s) {
+    const p = String(s || "").split("-");
+    return p.length === 3 ? new Date(+p[0], p[1] - 1, +p[2]) : null;
+  }
+  function uid() {
+    return (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
+      : "x" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+  }
+  function lsGet(k, def) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; } catch (e) { return def; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function lsDel(k) { try { localStorage.removeItem(k); } catch (e) {} }
+
+  function terbilang(n) {
+    n = Math.floor(Math.abs(n));
+    const s = ["", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas"];
+    if (n < 12) return s[n];
+    if (n < 20) return terbilang(n - 10) + " belas";
+    if (n < 100) return terbilang(Math.floor(n / 10)) + " puluh " + terbilang(n % 10);
+    if (n < 200) return "seratus " + terbilang(n - 100);
+    if (n < 1000) return terbilang(Math.floor(n / 100)) + " ratus " + terbilang(n % 100);
+    if (n < 2000) return "seribu " + terbilang(n - 1000);
+    if (n < 1e6) return terbilang(Math.floor(n / 1000)) + " ribu " + terbilang(n % 1000);
+    if (n < 1e9) return terbilang(Math.floor(n / 1e6)) + " juta " + terbilang(n % 1e6);
+    if (n < 1e12) return terbilang(Math.floor(n / 1e9)) + " miliar " + terbilang(n % 1e9);
+    return terbilang(Math.floor(n / 1e12)) + " triliun " + terbilang(n % 1e12);
+  }
+  function terbilangRupiah(n) {
+    const t = terbilang(n).replace(/\s+/g, " ").trim() || "nol";
+    return t.charAt(0).toUpperCase() + t.slice(1) + " rupiah";
+  }
+
+  let toastTimer;
+  function toast(msg, err) {
+    const t = $("toast");
+    t.textContent = msg; t.className = "toast" + (err ? " err" : ""); t.style.display = "block";
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => (t.style.display = "none"), err ? 6000 : 3500);
+  }
+  function pesanError(e) {
+    const m = (e && (e.message || e.error_description || e.msg)) || String(e);
+    if (/Invalid login credentials/i.test(m)) return "Email atau password salah.";
+    if (/rate limit|only request this after|too many/i.test(m)) return "Terlalu sering meminta link reset. Tunggu beberapa menit lalu coba lagi.";
+    if (/sending (recovery )?email|smtp/i.test(m)) return "Email gagal dikirim. Superadmin perlu mengatur pengirim email (SMTP) di Supabase — lihat PANDUAN-ONLINE.md.";
+    if (/same password|different from the old/i.test(m)) return "Password baru harus berbeda dari password lama.";
+    if (/Password should be at least/i.test(m)) return "Password terlalu pendek (minimal 8 karakter).";
+    if (/Failed to fetch|NetworkError|Load failed/i.test(m)) return "Tidak bisa terhubung ke internet / database. Coba lagi.";
+    if (/nik_16|NIK harus/i.test(m)) return "NIK harus 16 angka sesuai KTP.";
+    if (/no_rek_cek|Nomor rekening harus/i.test(m)) return "Nomor rekening pengirim harus 4–25 angka.";
+    if (/'no_rek' column|column .*no_rek/i.test(m)) return "Kolom nomor rekening belum aktif di database. Jalankan file migrasi-06-no-rek.sql di Supabase SQL Editor.";
+    if (/column .*nik|\bnik\b.*does not exist|'nik' column/i.test(m)) return "Kolom NIK belum aktif di database. Jalankan file migrasi-04-nik.sql di Supabase SQL Editor.";
+    if (/set_ttd_saya|admin\.ttd/i.test(m)) return "Fitur tanda tangan per admin belum aktif di database. Jalankan file migrasi-02-ttd-admin.sql di Supabase SQL Editor.";
+    if (/tandai_mutasi|mutasi_dicek/i.test(m)) return "Fitur Cek Mutasi belum aktif di database. Jalankan file migrasi-01-cek-mutasi.sql di Supabase SQL Editor.";
+    if (/row-level security|permission denied|Akses ditolak/i.test(m)) return "Akses ditolak: email ini belum terdaftar sebagai admin.";
+    return m;
+  }
+
+  function kodeKamar(blok, unit, kamar) {
+    unit = String(unit || "").trim(); kamar = String(kamar || "").trim();
+    if (!unit) return "";
+    return blok + unit + (kamar ? pad(kamar) : "");
+  }
+
+  // Nomor HP Indonesia → format wa.me (62…)
+  function nomorWA(hp) {
+    let n = String(hp || "").replace(/\D/g, "");
+    if (!n) return "";
+    if (n.startsWith("0")) n = "62" + n.slice(1);
+    else if (n.startsWith("8")) n = "62" + n;
+    return n.length >= 10 ? n : "";
+  }
+  function bukaWA(hp, teks) {
+    const n = nomorWA(hp);
+    window.open("https://wa.me/" + n + "?text=" + encodeURIComponent(teks), "_blank", "noopener");
+  }
+
+  // =====================================================================
+  //  LAPISAN DATA
+  //  Dua implementasi dengan antarmuka yang sama:
+  //  - apiSupabase : database online bersama (produksi)
+  //  - apiDemo     : localStorage (mode demo / percobaan)
+  // =====================================================================
+  function apiSupabase(url, key) {
+    const sb = window.supabase.createClient(url, key, {
+      auth: { persistSession: true, autoRefreshToken: true, storageKey: "kwmasuda-auth" }
+    });
+    const cek = (r) => { if (r.error) throw r.error; return r.data; };
+    return {
+      demo: false,
+      async sesi() {
+        const { data } = await sb.auth.getSession();
+        const u = data.session && data.session.user;
+        if (!u) return null;
+        const adm = cek(await sb.from("admin").select("*").ilike("email", u.email).maybeSingle());
+        if (!adm) throw new Error("Akses ditolak: " + u.email + " belum terdaftar atau sudah dinonaktifkan.");
+        return { email: u.email, nama: adm.nama, peran: adm.peran || "staf" };
+      },
+      async masuk(email, pass) {
+        cek(await sb.auth.signInWithPassword({ email: email, password: pass }));
+        return this.sesi();
+      },
+      async keluar() { await sb.auth.signOut(); },
+      async daftarAdmin() { return cek(await sb.from("admin").select("*").order("nama")); },
+      async setTtdSaya(ttd) { cek(await sb.rpc("set_ttd_saya", { p_ttd: ttd || "" })); },
+      async simpanAdmin(email, nama, peran, aktif) {
+        return cek(await sb.rpc("simpan_admin", { p_email: email, p_nama: nama, p_peran: peran, p_aktif: aktif }));
+      },
+      // Membuat akun login staf tanpa mengganggu sesi Superadmin yang sedang login
+      async buatAkun(email, pass) {
+        const tmp = window.supabase.createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false, storageKey: "kwmasuda-tmp" } });
+        const r = await tmp.auth.signUp({ email: email, password: pass });
+        if (r.error) throw r.error;
+        if (r.data && r.data.user && Array.isArray(r.data.user.identities) && !r.data.user.identities.length) {
+          throw new Error("Email ini sudah punya akun login. Staf cukup login dengan password lamanya.");
+        }
+        return { perluKonfirmasi: !(r.data && r.data.session) };
+      },
+      async gantiPassword(pass) { cek(await sb.auth.updateUser({ password: pass })); },
+      // Kirim link reset ke email; link kembali ke alamat aplikasi ini
+      async lupaPassword(email) {
+        cek(await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname }));
+      },
+      async emailSesi() { const { data } = await sb.auth.getSession(); return data.session ? data.session.user.email : ""; },
+      onRecovery(cb) { sb.auth.onAuthStateChange((ev) => { if (ev === "PASSWORD_RECOVERY") cb(); }); },
+      async ambilPengaturan() {
+        const r = cek(await sb.from("pengaturan").select("data").eq("id", 1).maybeSingle());
+        return (r && r.data) || {};
+      },
+      async simpanPengaturan(data, oleh) {
+        // RLS menolak diam-diam (0 baris) bila bukan Superadmin → jadikan error yang jelas
+        const r = cek(await sb.from("pengaturan").update({ data: data, diubah: new Date().toISOString(), diubah_oleh: oleh })
+          .eq("id", 1).select("id"));
+        if (!r.length) throw new Error("Hanya Superadmin yang bisa mengubah pengaturan.");
+      },
+      async daftarDokumen() {
+        // ambil bertahap (PostgREST membatasi 1000 baris per permintaan)
+        let semua = [], dari = 0;
+        for (;;) {
+          const r = cek(await sb.from("dokumen").select("*").order("dibuat", { ascending: false }).range(dari, dari + 999));
+          semua = semua.concat(r);
+          if (r.length < 1000) break;
+          dari += 1000;
+        }
+        return semua;
+      },
+      async buatDokumen(d) { return cek(await sb.rpc("buat_dokumen", { d: d })); },
+      async batalkan(id, alasan) {
+        const r = cek(await sb.from("dokumen").update({ batal: true, alasan_batal: alasan }).eq("id", id).select("id"));
+        if (!r.length) throw new Error("Hanya Superadmin yang bisa membatalkan kwitansi.");
+      },
+      // nama admin & waktu cek diisi oleh database
+      async tandaiMutasi(id, cocok) { return cek(await sb.rpc("tandai_mutasi", { p_id: id, p_cocok: cocok })); },
+      async imporDokumen(rows) {
+        // samakan kolom di setiap baris agar simpan massal konsisten
+        const kolom = [...new Set(rows.flatMap((r) => Object.keys(r)))];
+        rows = rows.map((r) => { const o = {}; kolom.forEach((k) => { o[k] = r[k] === undefined ? null : r[k]; }); return o; });
+        let masuk = 0;
+        for (let i = 0; i < rows.length; i += 200) {
+          const r = cek(await sb.from("dokumen")
+            .upsert(rows.slice(i, i + 200), { onConflict: "no", ignoreDuplicates: true }).select("id"));
+          masuk += r.length;
+        }
+        return { masuk: masuk, lewati: rows.length - masuk };
+      },
+      async daftarPenyewa() { return cek(await sb.from("penyewa").select("*").order("kamar")); },
+      async simpanPenyewa(p) {
+        const isi = Object.assign({}, p); delete isi.id; delete isi.dibuat;
+        if (p.id) return cek(await sb.from("penyewa").update(isi).eq("id", p.id).select().single());
+        return cek(await sb.from("penyewa").insert(isi).select().single());
+      }
+    };
+  }
+
+  function apiDemo() {
+    const K = { docs: "kwdemo.docs", penyewa: "kwdemo.penyewa", set: "kwdemo.set", cnt: "kwdemo.cnt" };
+    // Mode demo bisa dicoba sebagai staf dengan ?peran=staf di alamat
+    const sbgStaf = /[?&]peran=staf\b/.test(location.search);
+    const user = sbgStaf ? { email: "staf@lokal", nama: "Staf Demo", peran: "staf" }
+                         : { email: "demo@lokal", nama: "Admin Demo", peran: "superadmin" };
+    const daftar = () => lsGet("kwdemo.admin", [
+      { email: "demo@lokal", nama: "Admin Demo", peran: "superadmin", aktif: true },
+      { email: "staf@lokal", nama: "Staf Demo", peran: "staf", aktif: true }]);
+    const hanyaSA = (pesan) => { if (user.peran !== "superadmin") throw new Error(pesan); };
+    return {
+      demo: true,
+      async sesi() { return user; },
+      async masuk() { return user; },
+      async keluar() {},
+      async daftarAdmin() { return daftar(); },
+      async setTtdSaya(ttd) {
+        const l = daftar(); l.forEach((a) => { if (a.email === user.email) a.ttd = ttd || ""; }); lsSet("kwdemo.admin", l);
+      },
+      async simpanAdmin(email, nama, peran, aktif) {
+        hanyaSA("Hanya Superadmin yang bisa mengelola staf");
+        const l = daftar(); email = email.toLowerCase();
+        if (email === user.email && (peran !== "superadmin" || !aktif)) throw new Error("Tidak bisa menurunkan atau menonaktifkan akun Anda sendiri");
+        let a = l.find((x) => x.email === email);
+        if (a) Object.assign(a, { nama: nama, peran: peran, aktif: aktif });
+        else l.push(a = { email: email, nama: nama, peran: peran, aktif: aktif });
+        lsSet("kwdemo.admin", l);
+        return a;
+      },
+      async buatAkun() { return { perluKonfirmasi: false }; },
+      async gantiPassword() {},
+      async lupaPassword() {},
+      async emailSesi() { return user.email; },
+      onRecovery() {},
+      async ambilPengaturan() { return lsGet(K.set, {}); },
+      async simpanPengaturan(data) { hanyaSA("Hanya Superadmin yang bisa mengubah pengaturan."); lsSet(K.set, data); },
+      async daftarDokumen() {
+        return lsGet(K.docs, []).slice().sort((a, b) => (a.dibuat < b.dibuat ? 1 : -1));
+      },
+      async buatDokumen(d) {
+        // meniru fungsi buat_dokumen di database
+        const docs = lsGet(K.docs, []), s = lsGet(K.set, {}), cnt = lsGet(K.cnt, {});
+        const inv = d.jenis === "INV";
+        let k = inv ? String(s.awalanInv || "TAG").toUpperCase().replace(/[^A-Z0-9]/g, "") : "INV";
+        if (inv && (!k || k === "INV")) k = "TAG";
+        const awal = parseInt(inv ? s.nomorAwalInv : s.nomorAwal, 10) || 1;
+        const re = new RegExp("^" + k + "-(\\d+)$");
+        let mx = 0;
+        docs.forEach((x) => { if ((x.jenis === "INV") === inv) { const m = re.exec(x.no); if (m) mx = Math.max(mx, +m[1]); } });
+        const n = Math.max(cnt[k] || 0, mx, awal - 1) + 1;
+        cnt[k] = n; lsSet(K.cnt, cnt);
+        const row = Object.assign({}, d, {
+          id: uid(), no: k + "-" + (inv ? pad(n, 3) : n), batal: false, alasan_batal: null, diimpor: false,
+          dibuat: new Date().toISOString(), dibuat_oleh: user.email, waktu: d.waktu || new Date().toISOString()
+        });
+        docs.push(row); lsSet(K.docs, docs);
+        return row;
+      },
+      async batalkan(id, alasan) {
+        hanyaSA("Hanya Superadmin yang bisa membatalkan kwitansi.");
+        const docs = lsGet(K.docs, []);
+        docs.forEach((x) => { if (x.id === id) { x.batal = true; x.alasan_batal = alasan; } });
+        lsSet(K.docs, docs);
+      },
+      async tandaiMutasi(id, cocok) {
+        const docs = lsGet(K.docs, []);
+        const x = docs.find((d) => d.id === id);
+        Object.assign(x, { mutasi_dicek: cocok, mutasi_oleh: cocok ? user.nama : null,
+                           mutasi_waktu: cocok ? new Date().toISOString() : null });
+        lsSet(K.docs, docs);
+        return x;
+      },
+      async imporDokumen(rows) {
+        hanyaSA("Hanya Superadmin yang bisa mengimpor data.");
+        const docs = lsGet(K.docs, []), ada = new Set(docs.map((x) => x.no));
+        let masuk = 0;
+        rows.forEach((r) => {
+          if (ada.has(r.no)) return;
+          ada.add(r.no); masuk++;
+          docs.push(Object.assign({ id: uid(), batal: false, dibuat_oleh: user.email }, r));
+        });
+        lsSet(K.docs, docs);
+        return { masuk: masuk, lewati: rows.length - masuk };
+      },
+      async daftarPenyewa() {
+        return lsGet(K.penyewa, []).slice().sort((a, b) => String(a.kamar).localeCompare(String(b.kamar)));
+      },
+      async simpanPenyewa(p) {
+        const list = lsGet(K.penyewa, []);
+        let row;
+        if (p.id) {
+          row = list.find((x) => x.id === p.id);
+          Object.assign(row, p);
+        } else {
+          row = Object.assign({}, p, { id: uid(), dibuat: new Date().toISOString() });
+          list.push(row);
+        }
+        lsSet(K.penyewa, list);
+        return row;
+      }
+    };
+  }
+
+  // =====================================================================
+  //  STATE
+  // =====================================================================
+  let api = null;
+  let user = null;
+  let settings = Object.assign({}, SET_BAWAAN);
+  let docs = [];
+  let penyewa = [];
+  let admins = [];
+
+  function pakaiPengaturan(data) {
+    settings = Object.assign({}, SET_BAWAAN, data || {});
+    if (!settings.logo && !settings.logoDihapus) settings.logo = LOGO_MASUDA;
+  }
+
+  async function muatSemua() {
+    const hasil = await Promise.all([api.ambilPengaturan(), api.daftarDokumen(), api.daftarPenyewa(), api.daftarAdmin()]);
+    if (!hasil[0] || !Object.keys(hasil[0]).length) {
+      // Pertama kali: simpan pengaturan bawaan ke database supaya penomoran
+      // di server (nomorAwal 151, awalan TAG) sama dengan yang tampil di aplikasi.
+      hasil[0] = Object.assign({}, SET_BAWAAN);
+      try { await api.simpanPengaturan(hasil[0], user.email); } catch (e) { /* staf: tidak berhak, abaikan */ }
+    }
+    pakaiPengaturan(hasil[0]);
+    docs = hasil[1] || [];
+    penyewa = hasil[2] || [];
+    admins = hasil[3] || [];
+  }
+  async function muatDokumen() { docs = await api.daftarDokumen(); }
+  async function muatPenyewa() { penyewa = await api.daftarPenyewa(); }
+
+  // =====================================================================
+  //  KWITANSI (tampilan cetak)
+  // =====================================================================
+  const WARNA_STATUS = {
+    "LUNAS": { warna: "#c62828", kelas: "st-ok" },
+    "DP": { warna: "#d9480f", kelas: "st-warn" },
+    "BELUM LUNAS": { warna: "#d9480f", kelas: "st-warn" },
+    "BELUM DIBAYAR": { warna: "#d9480f", kelas: "st-warn" }
+  };
+
+  // Status dokumen menentukan teks & warna cap; null = tanpa cap
+  function statusDok(d) {
+    if (d.batal) return { teks: "DIBATALKAN", warna: "#6b7280", kelas: "st-mute" };
+    if (d.jenis === "RF") return { teks: "DIKEMBALIKAN", warna: "#1f4e79", kelas: "st-info" };
+    if (d.status && WARNA_STATUS[d.status]) return Object.assign({ teks: d.status }, WARNA_STATUS[d.status]);
+    const c = (d.catatan || "").toLowerCase();
+    if (/belum/.test(c)) return { teks: "BELUM LUNAS", warna: "#d9480f", kelas: "st-warn" };
+    if (/lunas/.test(c)) return { teks: "LUNAS", warna: "#c62828", kelas: "st-ok" };
+    if (d.jenis === "DP" || /\bdp\b|uang muka|booking/.test(c)) return { teks: "DP", warna: "#d9480f", kelas: "st-warn" };
+    if (d.jenis === "DEP") return { teks: "DEPOSIT", warna: "#1f4e79", kelas: "st-info" };
+    return null;
+  }
+
+  function teksPeriode(mulai, selesai, sewa) {
+    const a = tglISO(mulai), b = tglISO(selesai);
+    if (!a && !b) return "";
+    if (!b) return "Mulai " + tglPanjang(a);
+    if (!a) return "s/d " + tglPanjang(b);
+    let t;
+    if (a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth()) {
+      t = a.getDate() + " – " + tglPanjang(b);
+    } else if (a.getFullYear() === b.getFullYear()) {
+      t = a.getDate() + " " + BULAN[a.getMonth()] + " – " + tglPanjang(b);
+    } else {
+      t = tglPanjang(a) + " – " + tglPanjang(b);
+    }
+    const malam = Math.round((b - a) / 864e5);
+    if (malam <= 0) return t;
+    if (sewa === "BULANAN" && malam >= 27) return t + " (" + Math.max(1, Math.round(malam / 30)) + " bulan)";
+    return t + (malam < 28 || sewa === "HARIAN" ? " (" + malam + " malam)" : "");
+  }
+
+  // Tanda tangan dipilih dari admin yang namanya tertulis di "Diterima Oleh"
+  function ttdAdmin(nama) {
+    const n = String(nama || "").trim().toLowerCase();
+    const a = n && admins.find((x) => String(x.nama || "").trim().toLowerCase() === n);
+    return (a && a.ttd) || "";
+  }
+
+  function htmlKwitansi(d, label) {
+    const s = settings;
+    const nama = s.nama || "Kost";
+    const namaSingkat = s.namaSingkat || nama;
+    const refund = d.jenis === "RF";
+    const invoice = d.jenis === "INV";
+    const tunai = !d.bank;
+    // Huruf besar seperti format lama, kecuali "a.n"
+    const up = (t) => esc(String(t || "").toUpperCase().replace(/\bA\.N\.?(?=\s)/g, "a.n"));
+    const pengirim = tunai ? "" : up(d.bank) + (d.no_rek ? " " + esc(d.no_rek) : "") +
+      (d.rekening ? " a.n " + up(d.rekening) : "");
+    const pakaiRekTujuan = !tunai && s.rekTujuan && !refund;
+    const metode = tunai ? "TUNAI" : "Transfer " + (pakaiRekTujuan ? up(s.rekTujuan) : pengirim);
+    const st = statusDok(d);
+    const status = st ? st.teks : (d.catatan || "").toUpperCase();
+    const lunas = !!st && st.teks === "LUNAS";
+    const catatanLain = d.catatan && d.catatan.trim().toUpperCase() !== status;
+    const periode = teksPeriode(d.mulai, d.selesai, d.sewa);
+    const kamarTeks = d.kamar
+      ? "<b>" + esc(d.kamar) + "</b>" + (d.unit ? " &nbsp;(Unit " + esc((d.blok || "") + d.unit) +
+          (d.no_kamar ? " · Kamar " + esc(pad(d.no_kamar)) : "") + ")" : "")
+      : "";
+    const alamat = [s.alamat ? "Alamat: " + esc(s.alamat).replace(/\n/g, " ") : "",
+                    s.telp ? "Hotline/WA: " + esc(s.telp) : ""].filter(Boolean).join(" | ");
+    const judul = d.jenis === "KW" ? "KWITANSI RESMI" : JENIS[d.jenis] || "KWITANSI";
+    const pihak = invoice ? "Ditagihkan Kepada" : refund ? "Dibayarkan Kepada" : "Telah Terima Dari";
+    const bayarKe = s.rekTujuan ? "Transfer " + up(s.rekTujuan) : "Tunai / transfer ke admin";
+    const dibuat = new Date(d.dibuat || Date.now());
+    const ttd = ttdAdmin(d.admin) || s.ttd;   // tanda tangan admin penerima; cadangan: ttd bersama lama
+    const penyetor = d.penyetor || d.nama;     // dokumen lama belum punya nama penyetor
+    return '<div class="kw' + (invoice ? " inv" : "") + (d.batal ? " batal" : "") + '">' +
+      (s.watermark !== "tidak" ? '<div class="wm"><span>' + esc(nama) + "</span></div>" : "") +
+      (label ? '<div class="copy">' + esc(label) + "</div>" : "") +
+      '<div class="kw-head">' +
+        '<div class="brand">' + (s.logo ? '<img src="' + s.logo + '" alt="">' : "") +
+          '<div class="nm">' + esc(nama) + "</div></div>" +
+        '<div class="ttl"><div class="t">' + judul + '</div><div class="s">' +
+          (invoice ? "Tagihan Pembayaran Sewa" : "Bukti Pembayaran Sah") + "</div></div>" +
+      "</div>" +
+      '<div class="kw-addr">' + (alamat || "&nbsp;") + "</div>" +
+      '<div class="kw-line"></div>' +
+      '<table class="rinci">' +
+        '<tr><td class="l">' + (invoice ? "No. Invoice" : "No. Kwitansi / Bukti") + '</td><td class="c">:</td><td><b>' + esc(d.no) + "</b></td>" +
+          '<td class="st ' + (st ? st.kelas : "st-warn") + '">' + (status ? "STATUS: " + esc(status) : "") + "</td></tr>" +
+        row(pihak, '<b class="up">' + esc(invoice || refund ? d.nama : penyetor) + "</b>") +
+        (invoice || refund ? "" : row("Untuk Penyewa", '<b class="up">' + esc(d.nama) + "</b>")) +
+        row(invoice ? "Jumlah Tagihan" : "Uang Sejumlah", '<span class="terbilang">#' + esc(terbilangRupiah(d.nominal)) + "#</span>") +
+        row(invoice ? "Untuk Tagihan" : "Untuk Pembayaran", '<span class="up">' + esc(d.keterangan) + "</span>") +
+        (d.sewa ? row("Jenis Penyewaan", '<span class="up">' + esc(SEWA[d.sewa] || d.sewa) + "</span>") : "") +
+        row("Nomor Kamar Kost", kamarTeks) +
+        (periode ? row("Periode Sewa", periode) : "") +
+        (invoice
+          ? row("Pembayaran Ke", bayarKe)
+          : row("Metode Pembayaran", metode) +
+            (pakaiRekTujuan ? row("Rekening Pengirim", pengirim + " &nbsp;(" + tglJam(new Date(d.waktu || dibuat)) + ")") : "")) +
+        row(invoice ? "Diterbitkan Oleh" : refund ? "Diserahkan Oleh" : "Diterima Oleh",
+            '<span class="up">' + esc(d.admin) + "</span>") +
+        (catatanLain ? row("Catatan", esc(d.catatan)) : "") +
+        (d.batal ? row("Dibatalkan", esc(d.alasan_batal || "-")) : "") +
+      "</table>" +
+      '<div class="kw-mid">' +
+        '<div class="total"><div class="a">' +
+          (invoice ? "TOTAL TAGIHAN :" : refund ? "TOTAL DIKEMBALIKAN :" : "TOTAL PEMBAYARAN DITERIMA :") + "</div>" +
+          '<div class="b">' + rupiah(d.nominal).replace(" ", "") + "</div>" +
+          '<div class="c">' + (d.batal ? "DOKUMEN DIBATALKAN — TIDAK BERLAKU"
+            : invoice ? (lunas ? "✓ TAGIHAN SUDAH DIBAYAR" : "Mohon transfer sesuai nominal di atas")
+            : "✓ " + (lunas ? "LUNAS / " : "") + "SAH / TERVERIFIKASI") + "</div></div>" +
+        '<div class="tgl">' + (s.kota ? esc(s.kota) + ", " : "") + tglPanjang(dibuat) +
+          "<b>" + (invoice ? "Invoice Resmi " : "Kwitansi Sah ") + esc(namaSingkat) + "</b></div>" +
+      "</div>" +
+      '<div class="kw-sign">' +
+        (invoice
+          ? '<div class="instr"><div class="lbl">Cara Pembayaran:</div>' + bayarKe +
+              "<br>Kirim bukti transfer ke WA " + esc(s.telp || "admin") + "</div>"
+          : '<div><div class="lbl">' + (refund ? "Penerima," : "Penyetor,") + '</div><div class="space"></div>' +
+              '<div class="nm">( ' + esc(refund ? d.nama : penyetor) + " )</div></div>") +
+        '<div><div class="lbl">' + (invoice ? "Hormat kami, " : refund ? "Diserahkan oleh / " : "Penerima / ") +
+          esc(namaSingkat) + ',</div><div class="space">' +
+          (ttd ? '<img src="' + ttd + '" alt="">' : "") + "</div>" +
+          '<div class="nm">( ' + esc(d.admin) + " )</div>" +
+          (st ? capStempel(st, nama, dibuat, (d.id || "x") + (label ? label.length : 0)) : "") +
+        "</div>" +
+      "</div>" +
+      '<div class="kw-note"><span>' + (invoice
+          ? "Invoice ini diterbitkan oleh sistem " + esc(nama) + ". Pembayaran sah setelah dana diterima."
+          : "Kwitansi ini diterbitkan oleh sistem " + esc(nama) + " dan sah sebagai bukti pembayaran.") +
+        "</span><span>" + esc(d.no) + " · Dicetak " + tglJam(new Date()) + "</span></div>" +
+    "</div>";
+    function row(l, v) { return '<tr><td class="l">' + l + '</td><td class="c">:</td><td colspan="2">' + v + "</td></tr>"; }
+  }
+
+  // Cap bergaya stempel karet: bingkai ganda, tinta berwarna, tepi tidak rata
+  function capStempel(st, nama, tgl, id) {
+    const fid = "tinta" + String(id).replace(/\W/g, "");
+    const BLN = ["JAN","FEB","MAR","APR","MEI","JUN","JUL","AGU","SEP","OKT","NOV","DES"];
+    const tanggal = pad(tgl.getDate()) + " " + BLN[tgl.getMonth()] + " " + tgl.getFullYear();
+    const warna = st.warna;
+    const panjang = st.teks.length > 6;
+    const teksUtama = '<text x="86" y="' + (panjang ? 58 : 62) + '" text-anchor="middle" font-weight="900" stroke="none" ' +
+      (panjang ? 'font-size="21" textLength="134" lengthAdjust="spacingAndGlyphs"'
+               : 'font-size="' + (st.teks.length <= 2 ? 34 : 31) + '" letter-spacing="' + (st.teks.length <= 2 ? 10 : 5) + '"') +
+      ">" + esc(st.teks) + "</text>";
+    return '<svg class="cap" viewBox="0 0 172 92" xmlns="http://www.w3.org/2000/svg" aria-label="Cap ' + esc(st.teks) + '">' +
+      '<defs><filter id="' + fid + '" x="-5%" y="-5%" width="110%" height="110%">' +
+        '<feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="7" result="n"/>' +
+        '<feDisplacementMap in="SourceGraphic" in2="n" scale="1.6" result="d"/>' +
+        '<feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.4 2.15" result="m"/>' +
+        '<feComposite in="d" in2="m" operator="in"/>' +
+      "</filter></defs>" +
+      '<g filter="url(#' + fid + ')" fill="' + warna + '" stroke="' + warna + '" font-family="Arial Black, Arial, sans-serif">' +
+        '<rect x="3" y="3" width="166" height="86" rx="9" fill="none" stroke-width="4"/>' +
+        '<rect x="10" y="10" width="152" height="72" rx="5" fill="none" stroke-width="1.4"/>' +
+        '<text x="86" y="25" text-anchor="middle" font-size="8.5" font-weight="700" stroke="none"' +
+          (nama.length > 18 ? ' textLength="128" lengthAdjust="spacingAndGlyphs"' : ' letter-spacing="1"') + ">" +
+          esc(nama.toUpperCase()) + "</text>" +
+        '<line x1="18" y1="30" x2="154" y2="30" stroke-width="1"/>' +
+        teksUtama +
+        '<line x1="18" y1="67" x2="154" y2="67" stroke-width="1"/>' +
+        '<text x="86" y="77.5" text-anchor="middle" font-size="8.5" font-weight="700" stroke="none" letter-spacing="1.5">' +
+          tanggal + "</text>" +
+      "</g></svg>";
+  }
+
+  function cetak(d) {
+    const area = $("printArea");
+    if (settings.rangkap === "2") {
+      area.innerHTML = htmlKwitansi(d, "Lembar Penyewa") +
+        '<div class="cut">✂ - - - - - - - - - - - - - - - - gunting di sini - - - - - - - - - - - - - - - -</div>' +
+        htmlKwitansi(d, "Lembar Arsip");
+    } else {
+      area.innerHTML = htmlKwitansi(d, "");
+    }
+    const judulLama = document.title;
+    document.title = d.no + " " + d.nama;
+    setTimeout(() => { window.print(); document.title = judulLama; }, 150);
+  }
+
+  // ---------- Teks WhatsApp ----------
+  function teksWA(d) {
+    const s = settings, nama = s.nama || "Kost";
+    const st = statusDok(d);
+    const periode = teksPeriode(d.mulai, d.selesai, d.sewa);
+    const baris = [];
+    if (d.jenis === "INV") {
+      baris.push("Halo *" + d.nama + "*,", "", "Berikut tagihan sewa dari " + nama + ":", "",
+        "🧾 No. Invoice: " + d.no);
+    } else if (d.jenis === "RF") {
+      baris.push("Halo *" + d.nama + "*,", "", "Pengembalian deposit Anda telah kami proses.", "",
+        "🧾 No. Bukti: " + d.no);
+    } else {
+      baris.push("Halo *" + d.nama + "*,", "", "Terima kasih, pembayaran Anda telah kami terima.", "",
+        "🧾 No. Kwitansi: " + d.no, "👤 Penyewa: " + d.nama);
+      if (d.penyetor && d.penyetor.toLowerCase() !== d.nama.toLowerCase()) baris.push("💳 Dibayar oleh: " + d.penyetor);
+    }
+    if (d.kamar) baris.push("🏠 Kamar: " + d.kamar);
+    if (d.sewa) baris.push("🗓️ Jenis: " + (SEWA[d.sewa] || d.sewa));
+    baris.push("📌 Untuk: " + d.keterangan);
+    if (periode) baris.push("📅 Periode: " + periode);
+    baris.push("💰 Jumlah: " + rupiah(d.nominal).replace(" ", ""));
+    if (st) baris.push((st.teks === "LUNAS" ? "✅" : "ℹ️") + " Status: " + st.teks);
+    if (d.jenis === "INV" && s.rekTujuan) baris.push("", "Pembayaran ke: " + s.rekTujuan, "Mohon kirim bukti transfer ke nomor ini.");
+    baris.push("", "Hormat kami,", nama + (s.telp ? "\nWA: " + s.telp : ""));
+    return baris.join("\n");
+  }
+  function teksPengingat(p, bulan, sisa) {
+    const s = settings, nama = s.nama || "Kost";
+    return ["Halo *" + p.nama + "*,", "",
+      "Kami ingin mengingatkan pembayaran sewa kamar " + p.kamar + " untuk bulan " + namaBulan(bulan) +
+        " sebesar *" + rupiah(sisa).replace(" ", "") + "* belum kami terima.", "",
+      s.rekTujuan ? "Pembayaran dapat ditransfer ke: " + s.rekTujuan : "",
+      "Abaikan pesan ini jika sudah membayar. Terima kasih 🙏", "",
+      "Hormat kami,", nama].filter((x, i, a) => x !== "" || a[i - 1] !== "").join("\n");
+  }
+
+  // =====================================================================
+  //  PDF & KIRIM KE WHATSAPP
+  //  Website tidak bisa melampirkan file ke chat WA secara otomatis, jadi:
+  //  - HP  : Web Share API → PDF + pesan terlampir, admin memilih chat.
+  //  - Laptop: buka chat nomor penyewa (wa.me) + unduh PDF untuk diseret ke chat.
+  // =====================================================================
+  const HP_MOBILE = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  function namaFilePDF(d) {
+    const jenis = d.jenis === "INV" ? "Invoice" : "Kwitansi";
+    return (jenis + " " + d.no + " - " + d.nama).replace(/[\\/:*?"<>|]+/g, "-").slice(0, 90) + ".pdf";
+  }
+
+  async function buatPDF(d) {
+    await muatSkrip(HTML2PDF_JS, "html2pdf");
+    const box = document.createElement("div");
+    box.className = "kw-pdf";
+    box.innerHTML = htmlKwitansi(d, "");
+    document.body.appendChild(box);
+    try {
+      // html2canvas tidak bisa menggambar efek tinta (filter SVG) pada cap,
+      // jadi cap dirender dulu oleh browser menjadi PNG lalu ditukar.
+      await Promise.all([...box.querySelectorAll("svg.cap")].map(async (svg) => {
+        const src = new XMLSerializer().serializeToString(svg);
+        const im = new Image();
+        im.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(src);
+        await im.decode();
+        const c = document.createElement("canvas");
+        c.width = 172 * 3; c.height = 92 * 3;
+        c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
+        const png = new Image();
+        png.className = "cap";
+        png.src = c.toDataURL("image/png");
+        await png.decode();
+        svg.replaceWith(png);
+      }));
+      await Promise.all([...box.querySelectorAll("img")].map((im) =>
+        im.complete ? null : new Promise((r) => { im.onload = im.onerror = r; })));
+      return await window.html2pdf().set({
+        margin: [10, 10, 10, 10],
+        image: { type: "jpeg", quality: 0.95 },
+        html2canvas: { scale: 2, backgroundColor: "#ffffff", logging: false },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+      }).from(box.firstElementChild).outputPdf("blob");
+    } finally {
+      box.remove();
+    }
+  }
+
+  function unduhBlob(blob, nama) {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = nama; document.body.appendChild(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }
+
+  async function unduhPDF(d) {
+    toast("Menyiapkan PDF " + d.no + "…");
+    try { unduhBlob(await buatPDF(d), namaFilePDF(d)); }
+    catch (e) { toast("Gagal membuat PDF: " + pesanError(e), true); }
+  }
+
+  function hpPenyewa(d) {
+    const p = d.penyewa_id && penyewa.find((x) => x.id === d.penyewa_id);
+    return d.hp || (p && p.hp) || "";
+  }
+  function hintNomor(el, hint) {
+    const n = nomorWA(el.value);
+    if (!el.value.trim()) { hint.innerHTML = ""; return n; }
+    hint.innerHTML = n ? '<span class="wa-ok">✓ Akan dikirim ke +' + esc(n) + "</span>"
+                       : '<span class="wa-bad">⚠️ Nomor belum valid (contoh: 081234567890)</span>';
+    return n;
+  }
+
+  let waDok = null, waBlob = null;
+  async function bukaKirimWA(d) {
+    waDok = d; waBlob = null;
+    const p = d.penyewa_id && penyewa.find((x) => x.id === d.penyewa_id);
+    $("waInfo").textContent = d.no + " · " + d.nama + " · " + rupiah(d.nominal);
+    $("waNo").value = hpPenyewa(d);
+    hintNomor($("waNo"), $("waNoHint"));
+    $("waSimpanWrap").classList.add("hidden");
+    $("waSimpanWrap").dataset.penyewa = p ? p.id : "";
+    ["waShare", "waChat", "waUnduh"].forEach((id) => { $(id).disabled = true; });
+    // HP: kirim langsung jadi cara utama; laptop: buka chat + unduh jadi cara utama
+    $("waShareBox").classList.toggle("hidden", true);
+    $("waShareJudul").textContent = (HP_MOBILE ? "Cara 1 — " : "Cara 2 — ") + "Kirim PDF langsung";
+    $("waChatJudul").textContent = (HP_MOBILE ? "Cara 2 — " : "Cara 1 — ") + "Buka chat penyewa + unduh PDF";
+    const card = $("waChatBox").parentNode;
+    if (HP_MOBILE) card.insertBefore($("waShareBox"), $("waChatBox"));
+    else card.insertBefore($("waChatBox"), $("waShareBox"));
+    $("waStatus").textContent = "⏳ Menyiapkan file PDF…";
+    $("waModal").classList.remove("hidden");
+    try {
+      const blob = await buatPDF(d);
+      if (waDok !== d) return;               // jendela sudah ditutup / ganti dokumen
+      waBlob = blob;
+      const file = new File([blob], namaFilePDF(d), { type: "application/pdf" });
+      const bisaShare = !!(navigator.canShare && navigator.canShare({ files: [file] }));
+      $("waShareBox").classList.toggle("hidden", !bisaShare);
+      $("waStatus").innerHTML = "✅ PDF siap: <b>" + esc(namaFilePDF(d)) + "</b> (" + Math.round(blob.size / 1024) + " KB)";
+      ["waShare", "waChat", "waUnduh"].forEach((id) => { $(id).disabled = false; });
+    } catch (e) {
+      $("waStatus").innerHTML = '<span class="wa-bad">Gagal membuat PDF: ' + esc(pesanError(e)) +
+        "</span><br>Pesan teks tetap bisa dikirim lewat tombol Buka chat.";
+      $("waChat").disabled = false;
+    }
+  }
+
+  function tutupKirimWA() { $("waModal").classList.add("hidden"); waDok = null; waBlob = null; }
+
+  // Simpan nomor baru ke data penyewa bila admin mencentangnya
+  async function simpanNomorPenyewa() {
+    const pid = $("waSimpanWrap").dataset.penyewa;
+    if (!pid || $("waSimpanWrap").classList.contains("hidden") || !$("waSimpan").checked) return;
+    const p = penyewa.find((x) => x.id === pid);
+    if (!p) return;
+    try {
+      const row = await api.simpanPenyewa(Object.assign({}, p, { hp: $("waNo").value.trim() }));
+      Object.assign(p, row);
+      toast("Nomor WA " + p.nama + " disimpan.");
+    } catch (e) { toast("Nomor belum tersimpan: " + pesanError(e), true); }
+  }
+
+  $("waNo").addEventListener("input", () => {
+    hintNomor($("waNo"), $("waNoHint"));
+    const pid = $("waSimpanWrap").dataset.penyewa;
+    const p = pid && penyewa.find((x) => x.id === pid);
+    $("waSimpanWrap").classList.toggle("hidden", !p || !nomorWA($("waNo").value) ||
+      nomorWA($("waNo").value) === nomorWA(p.hp));
+  });
+  $("waTutup").addEventListener("click", tutupKirimWA);
+  $("waModal").addEventListener("click", (e) => { if (e.target === $("waModal")) tutupKirimWA(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("waModal").classList.contains("hidden")) tutupKirimWA(); });
+
+  $("waShare").addEventListener("click", async () => {
+    if (!waBlob || !waDok) return;
+    const d = waDok;
+    const file = new File([waBlob], namaFilePDF(d), { type: "application/pdf" });
+    simpanNomorPenyewa();
+    try {
+      await navigator.share({ files: [file], title: namaFilePDF(d), text: teksWA(d) });
+      tutupKirimWA(); toast("Terkirim ke aplikasi tujuan.");
+    } catch (e) {
+      if (e && e.name === "AbortError") return;   // admin membatalkan pilihan aplikasi
+      toast("Tidak bisa membagikan file: " + pesanError(e) + ". Pakai cara Buka chat.", true);
+    }
+  });
+
+  $("waChat").addEventListener("click", () => {
+    if (!waDok) return;
+    const d = waDok;
+    if (!nomorWA($("waNo").value) &&
+        !confirm("Nomor WA kosong/tidak valid. Lanjut buka WhatsApp dan pilih kontak sendiri?")) return;
+    if (waBlob) unduhBlob(waBlob, namaFilePDF(d));
+    bukaWA($("waNo").value, teksWA(d) + (waBlob ? "\n\n📎 Kwitansi PDF terlampir." : ""));
+    simpanNomorPenyewa();
+  });
+  $("waUnduh").addEventListener("click", () => { if (waBlob && waDok) unduhBlob(waBlob, namaFilePDF(waDok)); });
+
+  // =====================================================================
+  //  NAVIGASI
+  // =====================================================================
+  const TABS = ["dashboard", "buat", "riwayat", "mutasi", "penyewa", "pengaturan"];
+  document.querySelectorAll("nav button").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.tab)));
+  function showTab(name) {
+    if (TABS.indexOf(name) < 0) name = "dashboard";
+    document.querySelectorAll("nav button").forEach((b) => b.classList.toggle("active", b.dataset.tab === name));
+    TABS.forEach((t) => $("tab-" + t).classList.toggle("hidden", t !== name));
+    if (name === "dashboard") renderDashboard();
+    if (name === "riwayat") renderRiwayat();
+    if (name === "penyewa") renderPenyewa();
+    if (name === "mutasi") renderMutasi();
+    if (name === "pengaturan") isiPengaturan();
+    if (name === "buat") { isiPilihPenyewa(); renderPratinjau(); }
+    try { sessionStorage.setItem("kwmasuda.tab", name); } catch (e) {}
+  }
+
+  // =====================================================================
+  //  DASHBOARD
+  // =====================================================================
+  function ringkasPenyewa(bulan) {
+    const akhirBulan = new Date(+bulan.slice(0, 4), +bulan.slice(5, 7), 0);
+    return penyewa
+      .filter((p) => p.aktif && p.sewa === "BULANAN" && (!p.tgl_masuk || tglISO(p.tgl_masuk) <= akhirBulan))
+      .map((p) => {
+        const bayar = docs.filter((d) => !d.batal && (d.jenis === "KW" || d.jenis === "DP") && d.periode === bulan &&
+          (d.penyewa_id ? d.penyewa_id === p.id : (d.kamar && d.kamar === p.kamar)));
+        const dibayar = bayar.reduce((a, d) => a + Number(d.nominal || 0), 0);
+        const tarif = Number(p.tarif || 0);
+        const lunas = bayar.some((d) => d.status === "LUNAS") || (tarif > 0 && dibayar >= tarif);
+        const status = lunas ? "lunas" : dibayar > 0 ? "kurang" : "belum";
+        return { p: p, dibayar: dibayar, sisa: lunas ? 0 : Math.max(0, tarif - dibayar), status: status, bayar: bayar };
+      });
+  }
+
+  // Uang yang diterima tiap staf ("Diterima Oleh") di bulan terpilih
+  function renderRekapStaf(diBulan) {
+    const grup = {};
+    diBulan.filter((d) => d.jenis !== "INV").forEach((d) => {
+      const k = (d.admin || "-").trim();
+      const g = grup[k.toLowerCase()] || (grup[k.toLowerCase()] = { nama: k, n: 0, tunai: 0, transfer: 0, belumCek: 0 });
+      const nilai = (d.jenis === "RF" ? -1 : 1) * Number(d.nominal || 0);
+      g.n++;
+      if (d.bank) { g.transfer += nilai; if (!d.mutasi_dicek && d.jenis !== "RF") g.belumCek += nilai; }
+      else g.tunai += nilai;
+    });
+    const list = Object.values(grup).sort((a, b) => (b.tunai + b.transfer) - (a.tunai + a.transfer));
+    const tot = list.reduce((t, g) => ({ n: t.n + g.n, tunai: t.tunai + g.tunai, transfer: t.transfer + g.transfer,
+      belumCek: t.belumCek + g.belumCek }), { n: 0, tunai: 0, transfer: 0, belumCek: 0 });
+    const baris = (g, tebal) => "<tr" + (tebal ? ' class="total-row"' : "") + ">" +
+      "<td>" + esc(g.nama) + "</td>" +
+      '<td class="num">' + g.n + "</td>" +
+      '<td class="num">' + rupiah(g.tunai) + "</td>" +
+      '<td class="num">' + rupiah(g.transfer) + "</td>" +
+      '<td class="num">' + (g.belumCek ? '<span style="color:var(--warn)">' + rupiah(g.belumCek) + "</span>" : rupiah(0)) + "</td>" +
+      '<td class="num"><b>' + rupiah(g.tunai + g.transfer) + "</b></td></tr>";
+    $("rekapBody").innerHTML = list.map((g) => baris(g)).join("") +
+      (list.length > 1 ? baris(Object.assign({ nama: "TOTAL" }, tot), true) : "");
+    $("rekapEmpty").classList.toggle("hidden", list.length > 0);
+  }
+
+  function renderDashboard() {
+    if (!$("dBulan").value) $("dBulan").value = bulanIni();
+    const bulan = $("dBulan").value;
+    const diBulan = docs.filter((d) => !d.batal && ymDari(d.dibuat) === bulan);
+    const masuk = diBulan.reduce((a, d) =>
+      a + (d.jenis === "RF" ? -d.nominal : d.jenis === "INV" ? 0 : Number(d.nominal || 0)), 0);
+    const ring = ringkasPenyewa(bulan);
+    const lunas = ring.filter((r) => r.status === "lunas").length;
+    const tunggak = ring.reduce((a, r) => a + r.sisa, 0);
+    $("sMasuk").textContent = rupiah(masuk);
+    $("sDok").textContent = diBulan.length;
+    $("sLunas").textContent = lunas + " / " + ring.length;
+    $("sTunggak").textContent = rupiah(tunggak);
+    if (isSA()) renderRekapStaf(diBulan);
+
+    const f = $("dFilter").value, q = $("dCari").value.trim().toLowerCase();
+    const urut = { belum: 0, kurang: 1, lunas: 2 };
+    const list = ring
+      .filter((r) => !f || r.status === f)
+      .filter((r) => !q || (r.p.nama + " " + r.p.kamar).toLowerCase().includes(q))
+      .sort((a, b) => urut[a.status] - urut[b.status] || String(a.p.kamar).localeCompare(String(b.p.kamar)));
+    const BADGE = { lunas: '<span class="badge b-ok">Lunas</span>', kurang: '<span class="badge b-warn">Kurang / DP</span>',
+                    belum: '<span class="badge b-bad">Belum bayar</span>' };
+    $("dashBody").innerHTML = list.map((r) =>
+      "<tr>" +
+        "<td><b>" + esc(r.p.kamar) + "</b></td>" +
+        "<td>" + esc(r.p.nama) + "</td>" +
+        '<td class="num">' + rupiah(r.p.tarif) + "</td>" +
+        '<td class="num">' + rupiah(r.dibayar) + (r.bayar.length ? '<div class="hint">' + r.bayar.map((d) => esc(d.no)).join(", ") + "</div>" : "") + "</td>" +
+        "<td>" + BADGE[r.status] + (r.status === "kurang" ? '<div class="hint">Sisa ' + rupiah(r.sisa) + "</div>" : "") + "</td>" +
+        '<td><div class="row">' +
+          (r.status !== "lunas"
+            ? '<button class="btn sm" data-tagih="' + r.p.id + '">🧾 Terima Bayar</button>' +
+              '<button class="btn sm wa" data-ingat="' + r.p.id + '">💬 Ingatkan</button>'
+            : "") +
+        "</div></td>" +
+      "</tr>").join("");
+    $("dashEmpty").classList.toggle("hidden", ring.length > 0);
+  }
+  $("dBulan").addEventListener("change", renderDashboard);
+  $("dFilter").addEventListener("change", renderDashboard);
+  $("dCari").addEventListener("input", renderDashboard);
+  $("btnMuatDash").addEventListener("click", async () => {
+    try { await Promise.all([muatDokumen(), muatPenyewa()]); renderDashboard(); toast("Data diperbarui."); }
+    catch (e) { toast(pesanError(e), true); }
+  });
+  $("dashBody").addEventListener("click", (e) => {
+    const t = e.target.closest("[data-tagih]"), w = e.target.closest("[data-ingat]");
+    const bulan = $("dBulan").value;
+    if (t) {
+      const p = penyewa.find((x) => x.id === t.dataset.tagih);
+      const r = ringkasPenyewa(bulan).find((x) => x.p.id === p.id);
+      showTab("buat");
+      isiDariPenyewa(p, bulan, r && r.dibayar > 0 ? r.sisa : null);
+    }
+    if (w) {
+      const p = penyewa.find((x) => x.id === w.dataset.ingat);
+      const r = ringkasPenyewa(bulan).find((x) => x.p.id === p.id);
+      bukaWA(p.hp, teksPengingat(p, bulan, r ? r.sisa : p.tarif));
+    }
+  });
+
+  // =====================================================================
+  //  BUAT DOKUMEN
+  // =====================================================================
+  function isiBlok(sel) { $(sel).innerHTML = BLOK.map((b) => "<option>" + b + "</option>").join(""); }
+  isiBlok("blok"); isiBlok("pBlok");
+
+  const nominalEl = $("nominal");
+  function formatNominal(el, hintId) {
+    const n = angka(el.value);
+    el.value = n ? n.toLocaleString("id-ID") : "";
+    if (hintId) $(hintId).textContent = n ? terbilangRupiah(n) : "";
+  }
+  nominalEl.addEventListener("input", () => formatNominal(nominalEl, "nominalHint"));
+  $("pTarif").addEventListener("input", () => formatNominal($("pTarif")));
+  // ---------- NIK: hanya angka, 16 digit ----------
+  const bersihNIK = (v) => String(v || "").replace(/\D/g, "").slice(0, 16);
+
+  // "bank bca " → "BCA"; "tunai"/"cash" → kosong (dianggap tunai)
+  function bersihBank(v) {
+    let s = String(v || "").trim().replace(/\s+/g, " ").toUpperCase();
+    if (/^(TUNAI|CASH|-)$/.test(s)) return "";
+    const m = /^BANK\s+(BCA|BRI|BNI|MANDIRI|BSI|BTN|DANAMON|PERMATA|MUAMALAT|BJB|OCBC|UOB|CIMB NIAGA|MEGA|DKI)$/.exec(s);
+    return m ? m[1] : s;
+  }
+  $("bank").addEventListener("change", () => { $("bank").value = bersihBank($("bank").value); });
+  $("noRek").addEventListener("input", () => {
+    const el = $("noRek"), v = el.value.replace(/\D/g, "");
+    if (el.value !== v) el.value = v;
+    el.classList.remove("salah");
+    $("noRekHint").innerHTML = !v ? "Angka saja. Untuk e-wallet isi nomor HP akunnya."
+      : v.length < 4 ? '<span class="wa-bad">Terlalu pendek (' + v.length + " angka)</span>"
+      : '<span class="wa-ok">✓ ' + v.length + " angka</span>";
+  });
+  function nikSamar(n) { return n && n.length === 16 ? n.slice(0, 4) + " •••• •••• " + n.slice(12) : ""; }
+  function pasangNIK(id, hintId, teksAwal) {
+    $(id).addEventListener("input", () => {
+      const el = $(id), v = bersihNIK(el.value);
+      if (el.value !== v) el.value = v;
+      el.classList.remove("salah");
+      $(hintId).innerHTML = !v ? teksAwal
+        : v.length === 16 ? '<span class="wa-ok">✓ NIK 16 digit</span>'
+        : '<span class="wa-bad">' + v.length + "/16 digit</span>";
+    });
+  }
+  pasangNIK("nik", "nikHint", "Sesuai KTP. Disimpan untuk arsip admin, tidak dicetak di kwitansi.");
+  pasangNIK("pNik", "pNikHint", "Sesuai KTP. Hanya terlihat oleh admin, tidak dicetak di kwitansi.");
+  function cekNIK(id) {
+    const v = $(id).value;
+    if (v && v.length !== 16) {
+      $(id).classList.add("salah"); $(id).focus();
+      toast("NIK harus 16 angka (sekarang " + v.length + "). Kosongkan jika belum ada.", true);
+      return false;
+    }
+    return true;
+  }
+
+  $("pHp").addEventListener("input", () => {
+    if (!$("pHp").value.trim()) { $("pHpHint").textContent = "Dipakai untuk kirim kwitansi PDF & pengingat lewat WhatsApp."; return; }
+    hintNomor($("pHp"), $("pHpHint"));
+  });
+
+  function updateKodeHint() {
+    const k = kodeKamar($("blok").value, $("unit").value, $("noKamar").value);
+    $("kodeHint").innerHTML = k
+      ? "Kode kamar: <b>" + esc(k) + "</b> (Unit " + esc($("blok").value + $("unit").value) +
+        ($("noKamar").value ? " · Kamar " + esc(pad($("noKamar").value)) : "") + ")"
+      : "Contoh: Unit A1 kamar 3 → <b>A103</b>";
+  }
+  ["blok", "unit", "noKamar"].forEach((id) => $(id).addEventListener("input", updateKodeHint));
+  $("blok").addEventListener("change", updateKodeHint);
+
+  $("jenis").addEventListener("change", () => {
+    const j = $("jenis").value;
+    $("status").value = j === "INV" ? "BELUM DIBAYAR" : j === "DP" ? "DP" : "LUNAS";
+    aturPenyetor();
+  });
+
+  // Penyetor hanya dipakai untuk uang masuk (bukan invoice / pengembalian deposit)
+  function aturPenyetor() {
+    const perlu = !!BUTUH_PENYETOR[$("jenis").value];
+    $("penyetorWrap").classList.toggle("hidden", !perlu);
+    $("penyetor").required = perlu;
+  }
+  $("btnPenyetorSama").addEventListener("click", () => {
+    $("penyetor").value = $("nama").value.trim();
+    $("penyetor").classList.remove("salah");
+    renderPratinjau();
+  });
+  ["nama", "penyetor"].forEach((id) => $(id).addEventListener("input", () => $(id).classList.remove("salah")));
+  $("mulai").addEventListener("change", () => { if ($("mulai").value) $("periode").value = $("mulai").value.slice(0, 7); });
+
+  function isiPilihPenyewa() {
+    const sel = $("pilihPenyewa"), v = sel.value;
+    sel.innerHTML = '<option value="">— Ketik manual / tamu baru —</option>' +
+      penyewa.filter((p) => p.aktif).map((p) =>
+        '<option value="' + esc(p.id) + '">' + esc(p.kamar + " — " + p.nama + " (" + (SEWA[p.sewa] || p.sewa) + ", " +
+          rupiah(p.tarif) + ")") + "</option>").join("");
+    sel.value = v;
+  }
+
+  // Isi form dari data penyewa; untuk bulanan, periode = tanggal masuk di bulan tsb s/d sebulan kemudian
+  function isiDariPenyewa(p, bulan, nominal) {
+    if (!p) return;
+    bulan = bulan || bulanIni();
+    $("pilihPenyewa").value = p.id;
+    $("jenis").value = "KW"; $("status").value = "LUNAS";
+    $("sewa").value = p.sewa; $("nama").value = p.nama; $("hp").value = p.hp || "";
+    $("penyetor").value = "";   // admin wajib mengisi siapa yang benar-benar membayar
+    $("nik").value = p.nik || ""; $("nik").dispatchEvent(new Event("input"));
+    aturPenyetor();
+    $("blok").value = p.blok || "A"; $("unit").value = p.unit || ""; $("noKamar").value = p.no_kamar || "";
+    $("nominal").value = nominal != null ? nominal : (p.tarif || "");
+    formatNominal(nominalEl, "nominalHint");
+    $("periode").value = bulan;
+    if (p.sewa === "BULANAN") {
+      const y = +bulan.slice(0, 4), m = +bulan.slice(5, 7) - 1;
+      const hari = p.tgl_masuk ? tglISO(p.tgl_masuk).getDate() : 1;
+      const mulai = new Date(y, m, Math.min(hari, new Date(y, m + 1, 0).getDate()));
+      const selesai = new Date(y, m + 1, Math.min(hari, new Date(y, m + 2, 0).getDate()) - 1);
+      $("mulai").value = isoTgl(mulai); $("selesai").value = isoTgl(selesai);
+      $("keterangan").value = "Sewa Kos Bulan " + namaBulan(bulan);
+    } else {
+      $("mulai").value = ""; $("selesai").value = "";
+      $("keterangan").value = "Sewa Kos Harian";
+    }
+    updateKodeHint(); renderPratinjau();
+  }
+  $("pilihPenyewa").addEventListener("change", () => {
+    const p = penyewa.find((x) => x.id === $("pilihPenyewa").value);
+    if (p) isiDariPenyewa(p, $("periode").value || bulanIni());
+  });
+
+  function bacaForm() {
+    const waktuVal = $("waktu").value;
+    const blok = $("blok").value, unit = $("unit").value.trim(), noKamar = $("noKamar").value.trim();
+    return {
+      jenis: $("jenis").value,
+      sewa: $("sewa").value,
+      penyewa_id: $("pilihPenyewa").value || null,
+      nama: $("nama").value.trim().replace(/\s+/g, " "),
+      penyetor: BUTUH_PENYETOR[$("jenis").value] ? $("penyetor").value.trim().replace(/\s+/g, " ") : null,
+      nik: bersihNIK($("nik").value) || null,
+      hp: $("hp").value.trim(),
+      keterangan: $("keterangan").value.trim(),
+      blok: blok, unit: unit, no_kamar: noKamar,
+      kamar: kodeKamar(blok, unit, noKamar),
+      mulai: $("mulai").value || null,
+      selesai: $("selesai").value || null,
+      periode: $("periode").value || bulanIni(),
+      nominal: angka(nominalEl.value),
+      bank: bersihBank($("bank").value),
+      no_rek: bersihBank($("bank").value) ? ($("noRek").value.replace(/\D/g, "") || null) : null,
+      rekening: $("rekening").value.trim(),
+      waktu: waktuVal ? new Date(waktuVal).toISOString() : null,
+      admin: $("admin").value.trim(),
+      status: $("status").value,
+      catatan: null
+    };
+  }
+
+  function contoh(id) {
+    return ($(id).placeholder || "").replace(/^Contoh:\s*/, "").replace(/\s*\(.*\)$/, "");
+  }
+
+  function renderPratinjau() {
+    const d = bacaForm();
+    d.id = "pratinjau";
+    d.no = "(nomor otomatis)";
+    d.dibuat = new Date().toISOString();
+    let adaContoh = false;
+    const isi = (key, id) => { if (!d[key]) { d[key] = contoh(id); adaContoh = true; } };
+    isi("nama", "nama"); isi("keterangan", "keterangan"); isi("admin", "admin");
+    if (BUTUH_PENYETOR[d.jenis]) isi("penyetor", "penyetor");
+    if (!d.unit) { d.unit = "1"; d.no_kamar = d.no_kamar || "3"; d.kamar = kodeKamar(d.blok, d.unit, d.no_kamar); adaContoh = true; }
+    if (!d.nominal) { d.nominal = angka(contoh("nominal")); adaContoh = true; }
+    $("preview").innerHTML = htmlKwitansi(d, adaContoh ? "CONTOH — isi form untuk mengganti data" : "");
+    hintNomor($("hp"), $("hpHint"));
+  }
+  $("formDok").addEventListener("input", renderPratinjau);
+  $("formDok").addEventListener("change", renderPratinjau);
+
+  function resetFormDok() {
+    $("formDok").reset();
+    $("admin").value = user ? user.nama : "";
+    $("periode").value = bulanIni();
+    $("nominalHint").textContent = "";
+    ["nama", "penyetor", "noRek"].forEach((id) => $(id).classList.remove("salah"));
+    $("noRekHint").textContent = "Angka saja. Untuk e-wallet isi nomor HP akunnya.";
+    aturPenyetor();
+    updateKodeHint(); renderPratinjau();
+  }
+
+  $("formDok").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const d = bacaForm();
+    if (d.nama.length < 3) {
+      $("nama").classList.add("salah"); $("nama").focus();
+      toast("Nama lengkap penyewa wajib diisi.", true); return;
+    }
+    if (!cekNIK("nik")) return;
+    if (d.no_rek && d.no_rek.length < 4) {
+      $("noRek").classList.add("salah"); $("noRek").focus();
+      toast("Nomor rekening pengirim terlalu pendek. Kosongkan jika tidak ada.", true); return;
+    }
+    if (BUTUH_PENYETOR[d.jenis] && (d.penyetor || "").length < 3) {
+      $("penyetor").classList.add("salah"); $("penyetor").focus();
+      toast("Nama lengkap penyetor wajib diisi (orang yang membayar).", true); return;
+    }
+    if (!d.nominal) { toast("Nominal uang belum diisi.", true); nominalEl.focus(); return; }
+    if (d.mulai && d.selesai && d.selesai < d.mulai) {
+      toast("Tanggal selesai sewa lebih awal dari tanggal mulai.", true); $("selesai").focus(); return;
+    }
+    const btn = $("btnSimpanDok");
+    btn.disabled = true; btn.textContent = "Menyimpan…";
+    try {
+      const hasil = await api.buatDokumen(d);
+      docs.unshift(hasil);
+      // Penyewa terdaftar yang belum punya nomor WA / NIK: lengkapi dari form
+      const p = d.penyewa_id && penyewa.find((x) => x.id === d.penyewa_id);
+      const lengkapi = {};
+      if (p && !p.hp && nomorWA(d.hp)) lengkapi.hp = d.hp;
+      if (p && !p.nik && d.nik) lengkapi.nik = d.nik;
+      if (p && Object.keys(lengkapi).length) {
+        try { Object.assign(p, await api.simpanPenyewa(Object.assign({}, p, lengkapi))); } catch (e2) { /* tidak fatal */ }
+      }
+      resetFormDok();
+      tampilPascaSimpan(hasil);
+      toast("Tersimpan: " + hasil.no);
+      cetak(hasil);
+    } catch (err) {
+      toast("Gagal menyimpan: " + pesanError(err), true);
+    } finally {
+      btn.disabled = false; btn.innerHTML = "💾 Simpan &amp; Cetak PDF";
+    }
+  });
+
+  function tampilPascaSimpan(d) {
+    const box = $("pasca");
+    box.innerHTML = "✅ <b>" + esc(d.no) + "</b> tersimpan untuk " + esc(d.nama) + " (" + rupiah(d.nominal) + ")." +
+      '<div class="row">' +
+        '<button type="button" class="btn sm" data-pc="cetak">🖨️ Cetak lagi</button>' +
+        '<button type="button" class="btn sm wa" data-pc="wa">💬 Kirim PDF ke WhatsApp</button>' +
+        '<button type="button" class="btn sm light" data-pc="pdf">⬇️ PDF</button>' +
+        '<button type="button" class="btn sm light" data-pc="tutup">Tutup</button>' +
+      "</div>";
+    box.classList.remove("hidden");
+    box.onclick = (e) => {
+      const b = e.target.closest("[data-pc]"); if (!b) return;
+      if (b.dataset.pc === "cetak") cetak(d);
+      if (b.dataset.pc === "wa") bukaKirimWA(d);
+      if (b.dataset.pc === "pdf") unduhPDF(d);
+      if (b.dataset.pc === "tutup") box.classList.add("hidden");
+    };
+  }
+
+  // =====================================================================
+  //  CEK MUTASI BANK
+  // =====================================================================
+  const waktuTransfer = (d) => d.waktu || d.dibuat;
+  function tglJamPendek(iso) {
+    const d = new Date(iso);
+    return pad(d.getDate()) + " " + BULAN[d.getMonth()].slice(0, 3) + " " + d.getFullYear() + ", " +
+      pad(d.getHours()) + ":" + pad(d.getMinutes());
+  }
+  function infoMutasi(d) {
+    return d.mutasi_dicek ? "✓ dicek " + (d.mutasi_oleh || "?") + " · " + tglJamPendek(d.mutasi_waktu) : "";
+  }
+
+  // Hanya uang masuk lewat transfer yang perlu dicocokkan dengan mutasi
+  function daftarTransfer() {
+    return docs.filter((d) => !d.batal && d.bank && d.jenis !== "INV" && d.jenis !== "RF");
+  }
+
+  function renderMutasi() {
+    if (!$("mBulan").value) $("mBulan").value = bulanIni();
+    const bulan = $("mBulan").value, f = $("mFilter").value;
+    const q = $("mCari").value.trim().toLowerCase();
+    const diBulan = daftarTransfer().filter((d) => ymDari(waktuTransfer(d)) === bulan);
+    const sudah = diBulan.filter((d) => d.mutasi_dicek), belum = diBulan.filter((d) => !d.mutasi_dicek);
+    const jumlah = (arr) => arr.reduce((a, d) => a + Number(d.nominal || 0), 0);
+    $("mJml").textContent = diBulan.length;
+    $("mTotal").textContent = rupiah(jumlah(diBulan));
+    $("mSudah").textContent = sudah.length + " · " + rupiah(jumlah(sudah));
+    $("mBelum").textContent = belum.length + " · " + rupiah(jumlah(belum));
+
+    const list = (f === "sudah" ? sudah : f === "belum" ? belum : diBulan)
+      .filter((d) => !q || [d.bank, d.no_rek, d.rekening, d.nama, d.penyetor, d.no, d.kamar, String(d.nominal),
+        Number(d.nominal).toLocaleString("id-ID")].join(" ").toLowerCase().includes(q))
+      .sort((a, b) => (waktuTransfer(a) < waktuTransfer(b) ? -1 : 1));
+    $("mutasiBody").innerHTML = list.map((d) =>
+      "<tr>" +
+        "<td>" + tglJamPendek(waktuTransfer(d)) + (d.waktu ? "" : '<div class="hint">waktu simpan</div>') + "</td>" +
+        "<td><b>" + esc(String(d.bank).toUpperCase()) + "</b>" + (d.no_rek ? " " + esc(d.no_rek) : "") +
+          "<div>" + esc(d.rekening || "-") + "</div>" +
+          (d.penyetor ? '<div class="hint">Penyetor: ' + esc(d.penyetor) + "</div>" : "") + "</td>" +
+        '<td class="num"><b>' + rupiah(d.nominal) + "</b></td>" +
+        "<td>" + esc(d.no) + '<div class="hint">Penyewa: ' + esc(d.nama) + "</div></td>" +
+        "<td>" + esc(d.kamar || "") + "</td>" +
+        "<td>" + (d.mutasi_dicek
+          ? '<span class="badge b-ok">✓ Cocok</span><div class="hint">' + esc(d.mutasi_oleh || "?") + " · " + tglJamPendek(d.mutasi_waktu) + "</div>"
+          : '<span class="badge b-warn">Belum dicek</span>') + "</td>" +
+        "<td>" + (d.mutasi_dicek
+          ? '<button class="btn sm light" data-uncek="' + d.id + '">Batalkan tanda</button>'
+          : '<button class="btn sm" data-cek="' + d.id + '">✓ Cocok</button>') + "</td>" +
+      "</tr>").join("");
+    $("mutasiEmpty").classList.toggle("hidden", list.length > 0);
+  }
+  $("mBulan").addEventListener("change", renderMutasi);
+  $("mFilter").addEventListener("change", renderMutasi);
+  $("mCari").addEventListener("input", renderMutasi);
+  $("btnMuatMutasi").addEventListener("click", async () => {
+    try { await muatDokumen(); renderMutasi(); toast("Data diperbarui."); } catch (e) { toast(pesanError(e), true); }
+  });
+  $("mutasiBody").addEventListener("click", async (e) => {
+    const c = e.target.closest("[data-cek]"), u = e.target.closest("[data-uncek]");
+    const btn = c || u; if (!btn) return;
+    const d = docs.find((x) => x.id === (c ? c.dataset.cek : u.dataset.uncek)); if (!d) return;
+    if (u && !confirm("Batalkan tanda cocok mutasi untuk " + d.no + "?\n(Sebelumnya dicek " + (d.mutasi_oleh || "?") + ")")) return;
+    btn.disabled = true;
+    try {
+      const row = await api.tandaiMutasi(d.id, !!c);
+      Object.assign(d, { mutasi_dicek: row.mutasi_dicek, mutasi_oleh: row.mutasi_oleh, mutasi_waktu: row.mutasi_waktu });
+      renderMutasi();
+      toast(c ? d.no + " ditandai cocok oleh " + d.mutasi_oleh + "." : "Tanda mutasi " + d.no + " dibatalkan.");
+    } catch (err) {
+      btn.disabled = false;
+      toast(pesanError(err), true);
+    }
+  });
+
+  // =====================================================================
+  //  RIWAYAT
+  // =====================================================================
+  function filtered() {
+    const q = $("cari").value.trim().toLowerCase();
+    const m = $("bulan").value, j = $("fJenis").value;
+    return docs.filter((d) => {
+      if (m && ymDari(d.dibuat) !== m) return false;
+      if (j && d.jenis !== j) return false;
+      if (!q) return true;
+      return [d.no, d.nama, d.penyetor, d.kamar, d.keterangan, d.admin, d.rekening].join(" ").toLowerCase().includes(q);
+    });
+  }
+
+  function renderRiwayat() {
+    const list = filtered();
+    $("riwayatBody").innerHTML = list.slice(0, 500).map((d) => {
+      const st = statusDok(d);
+      const kls = !st ? "b-mute" : d.batal ? "b-mute" : st.teks === "LUNAS" ? "b-ok" : "b-warn";
+      return '<tr class="' + (d.batal ? "batal" : "") + '">' +
+        "<td><b>" + esc(d.no) + "</b>" + (d.diimpor ? '<div class="hint">impor</div>' : "") + "</td>" +
+        "<td>" + tglPanjang(new Date(d.dibuat)) + "</td>" +
+        "<td>" + esc(d.nama) + (d.penyetor && d.penyetor.toLowerCase() !== String(d.nama).toLowerCase()
+          ? '<div class="hint">disetor: ' + esc(d.penyetor) + "</div>" : "") + "</td>" +
+        "<td>" + esc(d.kamar) + "</td>" +
+        "<td>" + esc(d.keterangan) + "</td>" +
+        '<td class="num">' + rupiah(d.nominal) + "</td>" +
+        "<td>" + (st ? '<span class="badge ' + kls + '">' + esc(st.teks) + "</span>" : "") +
+          (d.mutasi_dicek ? '<div class="hint" style="color:var(--ok)">' + esc(infoMutasi(d)) + "</div>"
+            : d.bank && !d.batal && d.jenis !== "INV" && d.jenis !== "RF" ? '<div class="hint">mutasi belum dicek</div>' : "") +
+        "</td>" +
+        "<td>" + esc(d.admin) + "</td>" +
+        '<td><div class="row" style="flex-wrap:nowrap">' +
+          '<button class="btn sm" data-print="' + d.id + '" title="Cetak / PDF">🖨️</button>' +
+          '<button class="btn sm light" data-pdf="' + d.id + '" title="Unduh PDF">📄</button>' +
+          '<button class="btn sm wa" data-wa="' + d.id + '" title="Kirim PDF ke WhatsApp">💬</button>' +
+          (d.batal || !isSA() ? "" : '<button class="btn sm danger" data-batal="' + d.id + '" title="Batalkan">Batal</button>') +
+        "</div></td>" +
+      "</tr>";
+    }).join("");
+    $("riwayatEmpty").classList.toggle("hidden", list.length > 0);
+    const aktif = list.filter((d) => !d.batal && d.jenis !== "INV");
+    const total = aktif.reduce((a, d) => a + (d.jenis === "RF" ? -d.nominal : Number(d.nominal || 0)), 0);
+    $("riwayatTotal").textContent = list.length
+      ? list.length + " dokumen" + (list.length > 500 ? " (500 terbaru ditampilkan)" : "") +
+        " · Total masuk bersih (tanpa invoice & batal): " + rupiah(total)
+      : "";
+  }
+  $("cari").addEventListener("input", renderRiwayat);
+  $("bulan").addEventListener("change", renderRiwayat);
+  $("fJenis").addEventListener("change", renderRiwayat);
+  $("btnMuatRiwayat").addEventListener("click", async () => {
+    try { await muatDokumen(); renderRiwayat(); toast("Riwayat diperbarui."); } catch (e) { toast(pesanError(e), true); }
+  });
+  $("riwayatBody").addEventListener("click", async (e) => {
+    const p = e.target.closest("[data-print]"), w = e.target.closest("[data-wa]"), b = e.target.closest("[data-batal]");
+    const f = e.target.closest("[data-pdf]");
+    const id = (p || w || b || f || {}).dataset;
+    if (!id) return;
+    const d = docs.find((x) => x.id === (id.print || id.wa || id.batal || id.pdf));
+    if (!d) return;
+    if (p) cetak(d);
+    if (f) unduhPDF(d);
+    if (w) bukaKirimWA(d);
+    if (b) {
+      const alasan = prompt("Batalkan " + d.no + " atas nama " + d.nama + "?\nNomor tetap tercatat (tidak bisa dipakai ulang).\n\nTulis alasan pembatalan:");
+      if (alasan == null) return;
+      if (!alasan.trim()) { toast("Alasan pembatalan wajib diisi.", true); return; }
+      try {
+        await api.batalkan(d.id, alasan.trim());
+        d.batal = true; d.alasan_batal = alasan.trim();
+        renderRiwayat(); toast(d.no + " dibatalkan.");
+      } catch (err) { toast("Gagal membatalkan: " + pesanError(err), true); }
+    }
+  });
+
+  function unduh(nama, isi, tipe) {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([isi], { type: tipe }));
+    a.download = nama; document.body.appendChild(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+
+  $("btnExport").addEventListener("click", () => {
+    const list = filtered().slice().reverse();
+    if (!list.length) { toast("Tidak ada data untuk diekspor.", true); return; }
+    const head = ["No Dokumen","Jenis","Tanggal Dibuat","Nama Penyewa","NIK Penyewa","Nama Penyetor","No HP","Jenis Sewa","Kamar","Keterangan","Periode Sewa",
+      "Bulan Tagihan","Nominal","Terbilang","Bank","No Rekening Pengirim","Nama Rekening","Waktu Transfer","Admin","Status","Dibatalkan","Alasan Batal","Dibuat Oleh",
+      "Mutasi Dicek","Dicek Oleh","Waktu Cek Mutasi"];
+    const q = (v) => '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"';
+    const rows = list.map((d) => [
+      // ="…" supaya Excel tidak mengubah 16 digit NIK menjadi 3,2E+15
+      d.no, JENIS[d.jenis], tglJam(new Date(d.dibuat)), d.nama, d.nik ? '="' + d.nik + '"' : "", d.penyetor || "", d.hp, SEWA[d.sewa] || "", d.kamar, d.keterangan,
+      teksPeriode(d.mulai, d.selesai, d.sewa), namaBulan(d.periode), d.nominal, terbilangRupiah(d.nominal),
+      d.bank || "Tunai", d.no_rek ? '="' + d.no_rek + '"' : "", d.rekening, d.waktu ? tglJam(new Date(d.waktu)) : "", d.admin,
+      (statusDok(Object.assign({}, d, { batal: false })) || {}).teks || "", d.batal ? "YA" : "", d.alasan_batal, d.dibuat_oleh,
+      d.bank ? (d.mutasi_dicek ? "SUDAH" : "BELUM") : "", d.mutasi_oleh, d.mutasi_waktu ? tglJam(new Date(d.mutasi_waktu)) : ""
+    ].map(q).join(";"));
+    unduh("laporan-kwitansi-" + ($("bulan").value || "semua") + ".csv",
+      "﻿sep=;\n" + head.map(q).join(";") + "\n" + rows.join("\n"), "text/csv;charset=utf-8");
+  });
+
+  // =====================================================================
+  //  PENYEWA
+  // =====================================================================
+  function renderPenyewa() {
+    const q = $("pCari").value.trim().toLowerCase(), semua = $("pTampilNonaktif").checked;
+    const list = penyewa.filter((p) => (semua || p.aktif) &&
+      (!q || [p.nama, p.kamar, p.hp, p.nik].join(" ").toLowerCase().includes(q)));
+    $("penyewaBody").innerHTML = list.map((p) =>
+      "<tr>" +
+        "<td><b>" + esc(p.kamar) + "</b></td>" +
+        "<td>" + esc(p.nama) + (p.catatan ? '<div class="hint">' + esc(p.catatan) + "</div>" : "") + "</td>" +
+        "<td>" + (p.nik ? '<span style="white-space:nowrap">' + esc(nikSamar(p.nik)) + "</span>" : '<span class="hint">-</span>') + "</td>" +
+        "<td>" + esc(SEWA[p.sewa] || p.sewa) + "</td>" +
+        '<td class="num">' + rupiah(p.tarif) + "</td>" +
+        "<td>" + (p.hp ? esc(p.hp) : '<span class="hint">-</span>') + "</td>" +
+        "<td>" + (p.aktif ? '<span class="badge b-ok">Aktif</span>' : '<span class="badge b-mute">Keluar</span>') + "</td>" +
+        '<td><div class="row" style="flex-wrap:nowrap">' +
+          '<button class="btn sm light" data-edit="' + p.id + '">Edit</button>' +
+          (p.aktif ? '<button class="btn sm" data-bayar="' + p.id + '">🧾 Bayar</button>' : "") +
+        "</div></td>" +
+      "</tr>").join("");
+    $("penyewaEmpty").classList.toggle("hidden", list.length > 0);
+  }
+  $("pCari").addEventListener("input", renderPenyewa);
+  $("pTampilNonaktif").addEventListener("change", renderPenyewa);
+
+  function resetFormPenyewa() {
+    $("formPenyewa").reset(); $("pId").value = ""; $("pAktif").checked = true;
+    $("pNik").classList.remove("salah"); $("pNik").dispatchEvent(new Event("input"));
+    $("pHpHint").textContent = "Dipakai untuk kirim kwitansi PDF & pengingat lewat WhatsApp.";
+    $("judulPenyewa").textContent = "👥 Tambah Penyewa";
+    $("btnBatalEdit").classList.add("hidden");
+  }
+  $("btnBatalEdit").addEventListener("click", resetFormPenyewa);
+
+  $("penyewaBody").addEventListener("click", (e) => {
+    const ed = e.target.closest("[data-edit]"), by = e.target.closest("[data-bayar]");
+    if (ed) {
+      const p = penyewa.find((x) => x.id === ed.dataset.edit); if (!p) return;
+      $("pId").value = p.id; $("pNama").value = p.nama; $("pHp").value = p.hp || "";
+      $("pNik").value = p.nik || ""; $("pNik").dispatchEvent(new Event("input"));
+      $("pBlok").value = p.blok || "A"; $("pUnit").value = p.unit || ""; $("pKamar").value = p.no_kamar || "";
+      $("pSewa").value = p.sewa; $("pTarif").value = p.tarif ? Number(p.tarif).toLocaleString("id-ID") : "";
+      $("pMasuk").value = p.tgl_masuk || ""; $("pCatatan").value = p.catatan || ""; $("pAktif").checked = !!p.aktif;
+      $("judulPenyewa").textContent = "✏️ Edit Penyewa";
+      $("btnBatalEdit").classList.remove("hidden");
+      $("formPenyewa").scrollIntoView({ behavior: "smooth" });
+    }
+    if (by) {
+      const p = penyewa.find((x) => x.id === by.dataset.bayar);
+      showTab("buat"); isiDariPenyewa(p, bulanIni());
+    }
+  });
+
+  $("formPenyewa").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const blok = $("pBlok").value, unit = $("pUnit").value.trim(), kmr = $("pKamar").value.trim();
+    const p = {
+      id: $("pId").value || undefined,
+      nama: $("pNama").value.trim().replace(/\s+/g, " "), hp: $("pHp").value.trim() || null,
+      nik: bersihNIK($("pNik").value) || null,
+      blok: blok, unit: unit, no_kamar: kmr || null, kamar: kodeKamar(blok, unit, kmr),
+      sewa: $("pSewa").value, tarif: angka($("pTarif").value),
+      tgl_masuk: $("pMasuk").value || null, catatan: $("pCatatan").value.trim() || null,
+      aktif: $("pAktif").checked
+    };
+    if (!cekNIK("pNik")) return;
+    const nikSama = p.nik && penyewa.find((x) => x.nik === p.nik && x.id !== p.id);
+    if (nikSama && !confirm("NIK ini sudah dipakai " + nikSama.nama + " (" + nikSama.kamar + "). Tetap simpan?")) return;
+    const bentrok = penyewa.find((x) => x.aktif && p.aktif && x.kamar === p.kamar && x.id !== p.id);
+    if (bentrok && !confirm("Kamar " + p.kamar + " masih tercatat dihuni " + bentrok.nama + ". Tetap simpan?")) return;
+    const btn = $("btnSimpanPenyewa"); btn.disabled = true;
+    try {
+      const row = await api.simpanPenyewa(p);
+      const i = penyewa.findIndex((x) => x.id === row.id);
+      if (i >= 0) penyewa[i] = row; else penyewa.push(row);
+      penyewa.sort((a, b) => String(a.kamar).localeCompare(String(b.kamar)));
+      resetFormPenyewa(); renderPenyewa(); toast("Penyewa " + row.nama + " disimpan.");
+    } catch (err) { toast("Gagal menyimpan penyewa: " + pesanError(err), true); }
+    finally { btn.disabled = false; }
+  });
+
+  // =====================================================================
+  //  PENGATURAN
+  // =====================================================================
+  let setDraft = {};
+  function contohNomor() {
+    const awalan = String(settings.awalanInv || "TAG").toUpperCase().replace(/[^A-Z0-9]/g, "") || "TAG";
+    const maks = (inv, k) => {
+      const re = new RegExp("^" + k + "-(\\d+)$");
+      return docs.reduce((m, d) => { const x = (d.jenis === "INV") === inv && re.exec(d.no); return x ? Math.max(m, +x[1]) : m; }, 0);
+    };
+    const kw = Math.max(maks(false, "INV"), (settings.nomorAwal || 1) - 1) + 1;
+    const inv = Math.max(maks(true, awalan), (settings.nomorAwalInv || 1) - 1) + 1;
+    return "Nomor berikutnya — kwitansi: INV-" + kw + " · invoice: " + awalan + "-" + pad(inv, 3);
+  }
+  function isiPengaturan() {
+    setDraft = { logo: settings.logo, ttd: settings.ttd, logoDihapus: settings.logoDihapus };
+    $("sNama").value = settings.nama; $("sNamaSingkat").value = settings.namaSingkat;
+    $("sAlamat").value = settings.alamat; $("sTelp").value = settings.telp; $("sKota").value = settings.kota;
+    $("sRangkap").value = settings.rangkap; $("sRekTujuan").value = settings.rekTujuan;
+    $("sWatermark").value = settings.watermark;
+    $("sNomorAwal").value = settings.nomorAwal;
+    $("sAwalanInv").value = settings.awalanInv; $("sNomorAwalInv").value = settings.nomorAwalInv;
+    $("contohNo").textContent = contohNomor();
+    tampilGambarSet();
+    renderStaf();
+    isiKartuTtd();
+    // Staf hanya bisa melihat pengaturan
+    [...$("formSet").elements].forEach((el) => { el.disabled = !isSA(); });
+    $("btnSimpanSet").classList.toggle("hidden", !isSA());
+  }
+
+  // =====================================================================
+  //  KELOLA STAF (Superadmin)
+  // =====================================================================
+  function isSA() { return !!user && user.peran === "superadmin"; }
+
+  function renderStaf() {
+    const urut = admins.slice().sort((a, b) =>
+      (a.peran === "superadmin" ? 0 : 1) - (b.peran === "superadmin" ? 0 : 1) || String(a.nama).localeCompare(String(b.nama)));
+    $("daftarAdmin").innerHTML = urut.map((a) =>
+      "<tr>" +
+        "<td><b>" + esc(a.nama) + "</b>" + (String(a.email).toLowerCase() === String(user.email).toLowerCase() ? ' <span class="hint">(Anda)</span>' : "") + "</td>" +
+        "<td>" + esc(a.email) + "</td>" +
+        "<td>" + (a.peran === "superadmin" ? '<span class="badge b-sa">Superadmin</span>' : '<span class="badge b-mute">Staf</span>') + "</td>" +
+        "<td>" + (a.aktif === false ? '<span class="badge b-bad">Nonaktif</span>' : '<span class="badge b-ok">Aktif</span>') + "</td>" +
+        "<td>" + (a.ttd ? "✍️ ada" : '<span class="hint">belum</span>') + "</td>" +
+        '<td class="hanya-sa"><button type="button" class="btn sm light" data-staf="' + esc(a.email) + '">Edit</button></td>' +
+      "</tr>").join("");
+  }
+
+  function resetFormStaf() {
+    $("formStaf").reset(); $("stAktif").checked = true;
+    $("stEmail").disabled = false;
+    $("stPwWrap").classList.remove("hidden");
+    $("judulStaf").textContent = "➕ Tambah Staf Baru";
+    $("btnBatalStaf").classList.add("hidden");
+  }
+  $("btnBatalStaf").addEventListener("click", resetFormStaf);
+
+  $("daftarAdmin").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-staf]"); if (!b) return;
+    const a = admins.find((x) => x.email === b.dataset.staf); if (!a) return;
+    $("stEmail").value = a.email; $("stEmail").disabled = true;
+    $("stNama").value = a.nama; $("stPeran").value = a.peran || "staf"; $("stAktif").checked = a.aktif !== false;
+    $("stPwWrap").classList.add("hidden");
+    $("judulStaf").textContent = "✏️ Edit " + a.nama;
+    $("btnBatalStaf").classList.remove("hidden");
+    $("formStaf").scrollIntoView({ behavior: "smooth" });
+  });
+
+  $("formStaf").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const edit = $("stEmail").disabled;
+    const email = $("stEmail").value.trim().toLowerCase(), nama = $("stNama").value.trim().replace(/\s+/g, " ");
+    const peran = $("stPeran").value, aktif = $("stAktif").checked, pw = $("stPw").value;
+    if (!edit && pw && pw.length < 8) { toast("Password awal minimal 8 karakter.", true); $("stPw").focus(); return; }
+    if (admins.some((a) => a.email !== email && String(a.nama).toLowerCase() === nama.toLowerCase()) &&
+        !confirm("Nama \"" + nama + "\" sudah dipakai admin lain. Tanda tangan di kwitansi bisa tertukar. Tetap simpan?")) return;
+    const btn = $("btnSimpanStaf"); btn.disabled = true;
+    try {
+      const row = await api.simpanAdmin(email, nama, peran, aktif);
+      const i = admins.findIndex((a) => a.email === row.email);
+      if (i >= 0) admins[i] = Object.assign(admins[i], row); else admins.push(row);
+      let pesan = (edit ? "Data " : "Staf ") + row.nama + " disimpan.";
+      if (!edit && pw) {
+        try {
+          const r = await api.buatAkun(email, pw);
+          pesan += r.perluKonfirmasi ? " Akun dibuat — staf perlu klik link konfirmasi di emailnya."
+                                     : " Akun login dibuat, staf bisa langsung login.";
+        } catch (err2) { pesan += " Akun login BELUM dibuat: " + pesanError(err2); }
+      }
+      $("adminList").innerHTML = admins.map((a) => '<option value="' + esc(a.nama) + '">').join("");
+      resetFormStaf(); renderStaf(); toast(pesan, /BELUM/.test(pesan));
+    } catch (err) { toast(pesanError(err), true); }
+    finally { btn.disabled = false; }
+  });
+
+  // ---------- Ganti password sendiri ----------
+  $("btnGantiPw").addEventListener("click", async () => {
+    const a = $("pwBaru").value, b = $("pwUlang").value;
+    if (a.length < 8) { toast("Password minimal 8 karakter.", true); $("pwBaru").focus(); return; }
+    if (a !== b) { toast("Ulangi password tidak sama.", true); $("pwUlang").focus(); return; }
+    try {
+      await api.gantiPassword(a);
+      $("pwBaru").value = ""; $("pwUlang").value = "";
+      toast("Password berhasil diganti. Gunakan password baru saat login berikutnya.");
+    } catch (err) { toast(pesanError(err), true); }
+  });
+  function tampilGambarSet() {
+    $("logoPrev").src = setDraft.logo || "";
+    $("logoPrev").style.display = setDraft.logo ? "block" : "none";
+    $("btnHapusLogo").classList.toggle("hidden", !setDraft.logo);
+  }
+
+  // ---------- Tanda tangan milik admin yang sedang login ----------
+  let ttdBaru = null;
+  function adminSaya() { return admins.find((a) => String(a.email).toLowerCase() === String(user.email).toLowerCase()); }
+  function isiKartuTtd() {
+    const a = adminSaya();
+    ttdBaru = null;
+    $("ttdUntuk").innerHTML = "Untuk kwitansi yang <b>Diterima Oleh: " + esc(user.nama) + "</b>.";
+    $("ttdSaya").src = (a && a.ttd) || "";
+    $("fileTtd").value = "";
+    $("btnSimpanTtd").disabled = true;
+    $("btnHapusTtdSaya").classList.toggle("hidden", !(a && a.ttd));
+  }
+
+  // Latar terang → transparan, lalu dipotong rapat ke goresan tinta
+  function prosesTtd(img) {
+    const sk = Math.min(1, 900 / Math.max(img.width, img.height));
+    const w = Math.round(img.width * sk), h = Math.round(img.height * sk);
+    const c = document.createElement("canvas"); c.width = w; c.height = h;
+    const g = c.getContext("2d"); g.drawImage(img, 0, 0, w, h);
+    const px = g.getImageData(0, 0, w, h), p = px.data;
+    let x0 = w, y0 = h, x1 = -1, y1 = -1;
+    for (let i = 0; i < p.length; i += 4) {
+      const lum = 0.299 * p[i] + 0.587 * p[i + 1] + 0.114 * p[i + 2];
+      const a = lum >= 185 ? 0 : lum <= 120 ? 255 : Math.round(255 * (185 - lum) / 65);
+      p[i + 3] = Math.min(p[i + 3], a);
+      if (p[i + 3] > 40) {
+        const x = (i / 4) % w, y = Math.floor(i / 4 / w);
+        if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+      }
+    }
+    if (x1 < 0) throw new Error("Goresan tanda tangan tidak terdeteksi. Pakai tinta gelap di kertas putih.");
+    g.putImageData(px, 0, 0);
+    const m = 6; x0 = Math.max(0, x0 - m); y0 = Math.max(0, y0 - m); x1 = Math.min(w - 1, x1 + m); y1 = Math.min(h - 1, y1 + m);
+    const cw = x1 - x0 + 1, ch = y1 - y0 + 1;
+    const s2 = Math.min(1, 420 / cw, 160 / ch);
+    const out = document.createElement("canvas");
+    out.width = Math.round(cw * s2); out.height = Math.round(ch * s2);
+    out.getContext("2d").drawImage(c, x0, y0, cw, ch, 0, 0, out.width, out.height);
+    return out.toDataURL("image/png");
+  }
+
+  $("fileTtd").addEventListener("change", (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    const img = new Image(), r = new FileReader();
+    r.onload = () => { img.src = r.result; };
+    img.onload = () => {
+      try {
+        ttdBaru = prosesTtd(img);
+        $("ttdSaya").src = ttdBaru;
+        $("btnSimpanTtd").disabled = false;
+      } catch (err) { toast(err.message, true); }
+    };
+    r.readAsDataURL(f);
+  });
+
+  async function simpanTtdSaya(ttd, pesan) {
+    try {
+      await api.setTtdSaya(ttd);
+      const a = adminSaya(); if (a) a.ttd = ttd;
+      isiPengaturan(); renderPratinjau();
+      toast(pesan);
+    } catch (err) { toast(pesanError(err), true); }
+  }
+  $("btnSimpanTtd").addEventListener("click", () => {
+    if (ttdBaru) simpanTtdSaya(ttdBaru, "Tanda tangan " + user.nama + " disimpan.");
+  });
+  $("btnHapusTtdSaya").addEventListener("click", () => {
+    if (confirm("Hapus tanda tangan " + user.nama + "? Kwitansi akan tercetak tanpa tanda tangan.")) {
+      simpanTtdSaya("", "Tanda tangan dihapus.");
+    }
+  });
+  function terapkanHeader() {
+    $("appLogo").src = settings.logo || "";
+    $("appNama").textContent = settings.nama;
+  }
+
+  function pasangUnggahGambar(inputId, key, maxPx) {
+    $(inputId).addEventListener("change", (e) => {
+      const f = e.target.files[0]; if (!f) return;
+      const img = new Image(), r = new FileReader();
+      r.onload = () => { img.src = r.result; };
+      img.onload = () => {
+        const scale = Math.min(1, maxPx / Math.max(img.width, img.height));
+        const c = document.createElement("canvas");
+        c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        setDraft[key] = c.toDataURL("image/png");
+        if (key === "logo") setDraft.logoDihapus = false;
+        tampilGambarSet();
+      };
+      r.readAsDataURL(f);
+    });
+  }
+  pasangUnggahGambar("sLogo", "logo", 360);
+  $("btnHapusLogo").addEventListener("click", () => { setDraft.logo = ""; setDraft.logoDihapus = true; $("sLogo").value = ""; tampilGambarSet(); });
+  $("btnLogoBawaan").addEventListener("click", () => { setDraft.logo = LOGO_MASUDA; setDraft.logoDihapus = false; tampilGambarSet(); });
+
+  $("formSet").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const awalan = $("sAwalanInv").value.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+    if (awalan === "INV") {
+      toast('Awalan invoice tidak boleh "INV" karena sudah dipakai kwitansi.', true); $("sAwalanInv").focus(); return;
+    }
+    const baru = Object.assign({}, settings, {
+      nama: $("sNama").value.trim(), namaSingkat: $("sNamaSingkat").value.trim(),
+      alamat: $("sAlamat").value.trim(), telp: $("sTelp").value.trim(), kota: $("sKota").value.trim(),
+      rangkap: $("sRangkap").value, rekTujuan: $("sRekTujuan").value.trim(), watermark: $("sWatermark").value,
+      nomorAwal: Math.max(1, parseInt($("sNomorAwal").value, 10) || 1),
+      awalanInv: awalan || "TAG",
+      nomorAwalInv: Math.max(1, parseInt($("sNomorAwalInv").value, 10) || 1),
+      // logo bawaan tidak perlu disimpan ke database (sudah ada di aplikasi)
+      logo: setDraft.logo === LOGO_MASUDA ? "" : setDraft.logo,
+      logoDihapus: !!setDraft.logoDihapus, ttd: setDraft.ttd
+    });
+    const btn = $("btnSimpanSet"); btn.disabled = true;
+    try {
+      await api.simpanPengaturan(baru, user.email);
+      pakaiPengaturan(baru); terapkanHeader(); isiPengaturan(); renderPratinjau();
+      toast("Pengaturan disimpan untuk semua admin.");
+    } catch (err) { toast("Gagal menyimpan pengaturan: " + pesanError(err), true); }
+    finally { btn.disabled = false; }
+  });
+
+  // =====================================================================
+  //  IMPOR DATA LAMA
+  // =====================================================================
+  const BULAN_ID = { januari: 0, februari: 1, maret: 2, april: 3, mei: 4, juni: 5, juli: 6, agustus: 7, september: 8,
+    oktober: 9, november: 10, desember: 11, jan: 0, feb: 1, mar: 2, apr: 3, jun: 5, jul: 6, agu: 7, agt: 7, aug: 7,
+    sep: 8, okt: 9, oct: 9, nov: 10, des: 11, dec: 11, may: 4,
+    // kwitansi lama (Google Apps Script) memakai nama bulan bahasa Inggris
+    january: 0, february: 1, march: 2, june: 5, july: 6, august: 7, october: 9, december: 11, sept: 8, peb: 1, nop: 10 };
+
+  // Terima: 2026-10-17 · 17/10/2026 · 17-10-2026 · "17 Oktober 2026, 18:00 WIB" · Date Excel (angka)
+  function parseTanggal(v) {
+    v = String(v || "").trim();
+    if (!v) return null;
+    let m = /^(\d{4})-(\d{1,2})-(\d{1,2})(?:[ T](\d{1,2}):(\d{2}))?/.exec(v);
+    if (m) return new Date(+m[1], m[2] - 1, +m[3], +(m[4] || 9), +(m[5] || 0));
+    m = /^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})(?:\s+(\d{1,2})[:.](\d{2}))?/.exec(v);
+    if (m) { const y = +m[3] < 100 ? 2000 + +m[3] : +m[3]; return new Date(y, m[2] - 1, +m[1], +(m[4] || 9), +(m[5] || 0)); }
+    m = /^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})(?:,?\s+(\d{1,2})[:.](\d{2}))?/.exec(v);
+    if (m && BULAN_ID[m[2].toLowerCase()] != null) return new Date(+m[3], BULAN_ID[m[2].toLowerCase()], +m[1], +(m[4] || 9), +(m[5] || 0));
+    if (/^\d{5}(\.\d+)?$/.test(v)) return new Date(Math.round((+v - 25569) * 864e5)); // serial Excel
+    return null;
+  }
+  // "Rp1.350.000" / "1,350,000" / "1.350.000,00" → 1350000
+  function parseNominal(v) {
+    let s = String(v || "").trim().replace(/[^\d.,]/g, "");
+    s = s.replace(/[.,]\d{2}$/, "");
+    return angka(s);
+  }
+
+  function parseCSV(teks) {
+    teks = teks.replace(/^﻿/, "");
+    let baris = teks.split(/\r?\n/);
+    let pemisah = null;
+    if (/^sep=(.)/.test(baris[0])) { pemisah = baris[0].charAt(4); baris = baris.slice(1); }
+    teks = baris.join("\n");
+    if (!pemisah) {
+      const h = baris[0] || "";
+      pemisah = [";", ",", "\t"].sort((a, b) => h.split(b).length - h.split(a).length)[0];
+    }
+    const rows = []; let row = [], f = "", q = false;
+    for (let i = 0; i < teks.length; i++) {
+      const c = teks[i];
+      if (q) {
+        if (c === '"' && teks[i + 1] === '"') { f += '"'; i++; }
+        else if (c === '"') q = false;
+        else f += c;
+      } else if (c === '"') q = true;
+      else if (c === pemisah) { row.push(f); f = ""; }
+      else if (c === "\n") { row.push(f); rows.push(row); row = []; f = ""; }
+      else if (c !== "\r") f += c;
+    }
+    if (f || row.length) { row.push(f); rows.push(row); }
+    return rows.filter((r) => r.some((x) => String(x).trim() !== ""));
+  }
+
+  const KOLOM = {
+    no: ["no", "no dokumen", "no kwitansi", "nomor", "nomor kwitansi", "no kwitansi bukti", "no bukti", "no invoice", "kwitansi no", "no transaksi"],
+    tanggal: ["tanggal", "tanggal dibuat", "tgl", "tanggal kwitansi", "date"],
+    nama: ["nama", "nama penyewa", "penyewa", "untuk penyewa", "nama lengkap penyewa"],
+    penyetor: ["penyetor", "nama penyetor", "nama lengkap penyetor", "telah terima dari", "dari", "dibayar oleh",
+      "recievedfrom", "receivedfrom"],
+    kamar: ["kamar", "nomor kamar", "nomor kamar kost", "no kamar", "kode kamar"],
+    keterangan: ["keterangan", "untuk pembayaran", "pembayaran", "untuk", "forpayments"],
+    nominal: ["nominal", "jumlah", "rupiah", "total", "amount", "uang"],
+    admin: ["admin", "kasir", "diterima oleh", "penerima", "cashier"],
+    status: ["status"],
+    jenis: ["jenis", "jenis dokumen"],
+    bank: ["bank", "bank pengirim", "metode", "metode pembayaran"],
+    rekening: ["nama rekening", "rekening", "nama rekening pengirim"],
+    no_rek: ["no rekening", "no rekening pengirim", "nomor rekening", "nomor rekening pengirim", "no rek", "norek"],
+    sewa: ["jenis sewa", "jenis penyewaan"],
+    hp: ["no hp", "hp", "wa", "whatsapp", "no wa"],
+    nik: ["nik", "nik penyewa", "no ktp", "nomor ktp", "ktp", "nomor induk kependudukan"]
+  };
+  const normKol = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
+
+  function jenisDari(teks, no) {
+    const t = String(teks || "").toUpperCase();
+    if (/INVOICE|TAGIHAN/.test(t)) return "INV";
+    if (/PENGEMBALIAN/.test(t)) return "RF";
+    if (/DEPOSIT/.test(t)) return "DEP";
+    if (/UANG MUKA|BOOKING/.test(t)) return "DP";
+    if (JENIS[t]) return t;
+    const awalan = String(settings.awalanInv || "TAG").toUpperCase();
+    if (no && no.toUpperCase().startsWith(awalan + "-")) return "INV";
+    return "KW";
+  }
+  function statusDari(v) {
+    const t = String(v || "").toUpperCase().trim();
+    if (/BELUM DIBAYAR/.test(t)) return "BELUM DIBAYAR";
+    if (/BELUM/.test(t)) return "BELUM LUNAS";
+    if (/LUNAS/.test(t)) return "LUNAS";
+    if (/\bDP\b|UANG MUKA/.test(t)) return "DP";
+    return null;
+  }
+  function pecahKamar(k) {
+    const m = /^([A-HJ])\s*(\d+?)\s*(\d{2})$/i.exec(String(k || "").replace(/\s+/g, ""));
+    return m ? { blok: m[1].toUpperCase(), unit: m[2], no_kamar: String(+m[3]) } : {};
+  }
+
+  function barisDariCSV(rows) {
+    const head = rows[0].map(normKol);
+    const idx = {};
+    Object.keys(KOLOM).forEach((k) => {
+      const i = head.findIndex((h) => KOLOM[k].indexOf(h) >= 0);
+      if (i >= 0) idx[k] = i;
+    });
+    if (idx.no == null || (idx.nama == null && idx.penyetor == null) || idx.nominal == null) {
+      throw new Error("Kolom wajib tidak ditemukan. Baris judul harus memuat No, Nama (penyewa/penyetor), dan Nominal/Jumlah. " +
+        "Terbaca: " + rows[0].join(" | "));
+    }
+    const ambil = (r, k) => (idx[k] == null ? "" : String(r[idx[k]] || "").trim());
+    return { kolom: idx, data: rows.slice(1).map((r) => {
+      const no = ambil(r, "no"), tgl = parseTanggal(ambil(r, "tanggal")) || new Date();
+      const kamar = ambil(r, "kamar").toUpperCase().replace(/\s+/g, "");
+      const bank = ambil(r, "bank");
+      return Object.assign({
+        no: no, jenis: jenisDari(ambil(r, "jenis"), no),
+        sewa: /HARIAN/i.test(ambil(r, "sewa")) ? "HARIAN" : /BULANAN/i.test(ambil(r, "sewa")) ? "BULANAN" : null,
+        // file lama hanya punya "Telah Terima Dari": dipakai sebagai penyewa sekaligus penyetor
+        nama: ambil(r, "nama") || ambil(r, "penyetor"), penyetor: ambil(r, "penyetor") || ambil(r, "nama") || null,
+        hp: ambil(r, "hp") || null,
+        nik: /^\d{16}$/.test(ambil(r, "nik").replace(/\D/g, "")) ? ambil(r, "nik").replace(/\D/g, "") : null,
+        keterangan: ambil(r, "keterangan"), kamar: kamar || null,
+        nominal: parseNominal(ambil(r, "nominal")),
+        bank: /tunai|cash/i.test(bank) ? null : (bersihBank(bank) || null), rekening: ambil(r, "rekening") || null,
+        no_rek: /^\d{4,25}$/.test(ambil(r, "no_rek").replace(/\D/g, "")) ? ambil(r, "no_rek").replace(/\D/g, "") : null,
+        admin: ambil(r, "admin"), status: statusDari(ambil(r, "status")),
+        dibuat: tgl.toISOString(), waktu: tgl.toISOString(), periode: ymDari(tgl.toISOString()), diimpor: true
+      }, pecahKamar(kamar));
+    }) };
+  }
+
+  function barisDariJSON(obj) {
+    const list = Array.isArray(obj) ? obj : obj.docs;
+    if (!Array.isArray(list)) throw new Error("File JSON tidak dikenali (harus file Unduh Cadangan).");
+    return { kolom: null, pengaturan: obj.settings || null, data: list.map((d) => ({
+      no: d.no, jenis: JENIS[d.jenis] ? d.jenis : "KW", sewa: d.sewa || null,
+      nama: d.nama || "", penyetor: d.penyetor || (d.jenis === "INV" || d.jenis === "RF" ? null : d.nama || null),
+      hp: d.hp || null, nik: /^\d{16}$/.test(d.nik || "") ? d.nik : null, keterangan: d.keterangan || "",
+      blok: d.blok || null, unit: d.unit || null, no_kamar: d.noKamar || d.no_kamar || null, kamar: d.kamar || null,
+      mulai: d.mulai || null, selesai: d.selesai || null,
+      periode: d.periode || (d.mulai ? String(d.mulai).slice(0, 7) : ymDari(d.dibuat || Date.now())),
+      nominal: Number(d.nominal) || 0, bank: d.bank || null, rekening: d.rekening || null,
+      no_rek: /^\d{4,25}$/.test(d.no_rek || "") ? d.no_rek : null,
+      waktu: d.waktu || d.dibuat || null, admin: d.admin || "", status: d.status || statusDari(d.catatan),
+      catatan: d.catatan || null, dibuat: d.dibuat || new Date().toISOString(), diimpor: true
+    })) };
+  }
+
+  let imporSiap = null;
+  $("fileImpor").addEventListener("change", (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+      const box = $("imporPreview");
+      try {
+        const hasil = /\.json$/i.test(f.name) ? barisDariJSON(JSON.parse(r.result)) : barisDariCSV(parseCSV(String(r.result)));
+        const valid = hasil.data.filter((d) => d.no && d.nama && d.nominal > 0);
+        const salah = hasil.data.length - valid.length;
+        const sudahAda = new Set(docs.map((d) => d.no));
+        const dobel = valid.filter((d) => sudahAda.has(d.no)).length;
+        imporSiap = valid;
+        box.innerHTML =
+          "<b>" + valid.length + "</b> data siap diimpor" +
+          (salah ? " · <span style='color:var(--danger)'>" + salah + " baris dilewati (No/Nama/Nominal kosong)</span>" : "") +
+          (dobel ? " · " + dobel + " nomor sudah ada (akan dilewati)" : "") +
+          (hasil.kolom ? '<div class="hint">Kolom terbaca: ' + Object.keys(hasil.kolom).join(", ") + "</div>" : "") +
+          '<div class="table-wrap" style="margin-top:8px"><table class="list"><thead><tr><th>No</th><th>Tanggal</th><th>Nama</th><th>Kamar</th><th>Nominal</th><th>Status</th></tr></thead><tbody>' +
+          valid.slice(0, 5).map((d) => "<tr><td>" + esc(d.no) + "</td><td>" + tglPanjang(new Date(d.dibuat)) + "</td><td>" +
+            esc(d.nama) + "</td><td>" + esc(d.kamar) + '</td><td class="num">' + rupiah(d.nominal) + "</td><td>" + esc(d.status || "") + "</td></tr>").join("") +
+          "</tbody></table></div>" +
+          (valid.length > 5 ? '<div class="hint">…dan ' + (valid.length - 5) + " baris lainnya</div>" : "") +
+          (hasil.pengaturan ? '<label class="inline"><input type="checkbox" id="imporSet"> Ikut timpa Pengaturan dengan isi file cadangan</label>' : "") +
+          '<button class="btn block" id="btnImpor"' + (valid.length ? "" : " disabled") + ">⬆️ Impor " + valid.length + " data</button>";
+        box.classList.remove("hidden");
+        const btn = $("btnImpor");
+        btn.onclick = async () => {
+          btn.disabled = true; btn.textContent = "Mengimpor…";
+          try {
+            if (hasil.pengaturan && $("imporSet") && $("imporSet").checked) {
+              const s = Object.assign({}, settings, hasil.pengaturan);
+              delete s.formatNo;
+              await api.simpanPengaturan(s, user.email); pakaiPengaturan(s); terapkanHeader();
+            }
+            const res = await api.imporDokumen(imporSiap);
+            await muatDokumen();
+            box.innerHTML = "✅ " + res.masuk + " data berhasil diimpor" +
+              (res.lewati ? ", " + res.lewati + " dilewati karena nomornya sudah ada." : ".") +
+              '<div class="hint">' + contohNomor() + "</div>";
+            $("fileImpor").value = ""; imporSiap = null;
+            $("contohNo").textContent = contohNomor();
+            toast("Impor selesai: " + res.masuk + " data.");
+          } catch (err) {
+            toast("Impor gagal: " + pesanError(err), true);
+            btn.disabled = false; btn.textContent = "⬆️ Coba impor lagi";
+          }
+        };
+      } catch (err) {
+        imporSiap = null;
+        box.innerHTML = '<span style="color:var(--danger)">' + esc(err.message) + "</span>";
+        box.classList.remove("hidden");
+      }
+    };
+    r.readAsText(f);
+  });
+
+  // =====================================================================
+  //  LOGIN & MULAI
+  // =====================================================================
+  function konfigAktif() {
+    if (KONFIG.SUPABASE_URL && KONFIG.SUPABASE_ANON_KEY) return KONFIG;
+    return lsGet("kwmasuda.konfig", null);
+  }
+  function muatSkrip(src, global) {
+    global = global || "supabase";
+    return new Promise((ok, gagal) => {
+      if (window[global]) return ok();
+      const s = document.createElement("script");
+      s.src = src; s.onload = ok;
+      s.onerror = () => gagal(new Error("Gagal memuat pustaka (" + global + "). Periksa koneksi internet."));
+      document.head.appendChild(s);
+    });
+  }
+
+  // Ditangkap sebelum pustaka Supabase membersihkan alamat (#access_token…&type=recovery)
+  const HASH_AWAL = location.hash || "";
+  const DARI_LINK_RESET = /type=recovery/.test(HASH_AWAL);
+  const LINK_KEDALUWARSA = /error_code=otp_expired|error=access_denied/.test(HASH_AWAL);
+
+  function tampilLogin(pesan, form) {
+    $("app").classList.add("hidden");
+    $("loginView").classList.remove("hidden");
+    $("loginLogo").src = LOGO_MASUDA;
+    const adaKonfig = !!konfigAktif();
+    form = adaKonfig ? (form || "formLogin") : null;
+    ["formLogin", "formLupa", "formResetPw"].forEach((id) => $(id).classList.toggle("hidden", id !== form));
+    $("setupBox").classList.toggle("hidden", adaKonfig);
+    $("loginErr").textContent = pesan || "";
+  }
+
+  function bersihkanAlamat() {
+    if (location.hash) history.replaceState(null, "", location.pathname + location.search);
+  }
+
+  async function tampilResetPw() {
+    tampilLogin("", "formResetPw");
+    $("resetErr").textContent = "";
+    try { $("resetEmail").textContent = await api.emailSesi(); } catch (e) { /* abaikan */ }
+    $("rpBaru").focus();
+  }
+
+  $("linkLupa").addEventListener("click", (e) => {
+    e.preventDefault();
+    $("lupaEmail").value = $("lEmail").value.trim();
+    $("lupaInfo").textContent = "";
+    tampilLogin("", "formLupa");
+    $("lupaEmail").focus();
+  });
+  document.querySelectorAll(".linkKeLogin").forEach((a) => a.addEventListener("click", (e) => {
+    e.preventDefault(); tampilLogin();
+  }));
+
+  $("formLupa").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = $("btnLupa"); btn.disabled = true; btn.textContent = "Mengirim…";
+    const info = $("lupaInfo"); info.textContent = ""; info.style.color = "";
+    try {
+      if (!api) { await muatSkrip(SUPABASE_JS); const k = konfigAktif(); api = apiSupabase(k.SUPABASE_URL, k.SUPABASE_ANON_KEY); }
+      await api.lupaPassword($("lupaEmail").value.trim());
+      info.style.color = "var(--ok)";
+      info.innerHTML = "✅ Jika email terdaftar, link reset sudah dikirim. Cek <b>Kotak Masuk</b> dan folder <b>Spam</b>, " +
+        "lalu buka link-nya di perangkat ini.";
+    } catch (err) {
+      info.textContent = pesanError(err);
+    } finally { btn.disabled = false; btn.textContent = "Kirim link reset password"; }
+  });
+
+  $("formResetPw").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const a = $("rpBaru").value, b = $("rpUlang").value;
+    if (a.length < 8) { $("resetErr").textContent = "Password minimal 8 karakter."; return; }
+    if (a !== b) { $("resetErr").textContent = "Ulangi password tidak sama."; return; }
+    const btn = $("btnResetPw"); btn.disabled = true; btn.textContent = "Menyimpan…";
+    try {
+      await api.gantiPassword(a);
+      $("rpBaru").value = ""; $("rpUlang").value = "";
+      bersihkanAlamat();
+      toast("Password baru tersimpan.");
+      const u = await api.sesi();
+      if (u) await masukAplikasi(u); else tampilLogin("Password baru tersimpan. Silakan login.");
+    } catch (err) {
+      $("resetErr").textContent = pesanError(err);
+    } finally { btn.disabled = false; btn.textContent = "Simpan password baru"; }
+  });
+
+  async function masukAplikasi(u) {
+    user = u;
+    await muatSemua();
+    $("loginView").classList.add("hidden");
+    $("app").classList.remove("hidden");
+    $("demoBar").classList.toggle("hidden", !api.demo);
+    $("userNama").textContent = "👤 " + user.nama;
+    document.body.classList.toggle("peran-staf", !isSA());
+    $("userPeran").textContent = isSA() ? "Superadmin" : "Staf";
+    $("userPeran").className = "badge " + (isSA() ? "b-sa" : "b-mute");
+    $("adminList").innerHTML = admins.map((a) => '<option value="' + esc(a.nama) + '">').join("");
+    terapkanHeader();
+    resetFormDok();
+    let tab = "dashboard";
+    try { tab = sessionStorage.getItem("kwmasuda.tab") || "dashboard"; } catch (e) {}
+    showTab(tab);
+  }
+
+  async function mulai() {
+    if (/[?&]demo\b/.test(location.search) || lsGet("kwmasuda.demo", false)) {
+      api = apiDemo();
+      return masukAplikasi(await api.sesi());
+    }
+    const k = konfigAktif();
+    if (!k) return tampilLogin();
+    try {
+      await muatSkrip(SUPABASE_JS);
+      api = apiSupabase(k.SUPABASE_URL, k.SUPABASE_ANON_KEY);
+      let modeReset = false;
+      api.onRecovery(() => { modeReset = true; tampilResetPw(); });
+      if (LINK_KEDALUWARSA) {
+        bersihkanAlamat();
+        return tampilLogin("Link reset sudah kedaluwarsa atau sudah pernah dipakai. Klik \"Lupa password?\" untuk minta link baru.");
+      }
+      if (DARI_LINK_RESET) {
+        // tunggu pustaka selesai membaca token dari link email
+        const u0 = await api.emailSesi().catch(() => "");
+        if (u0) return tampilResetPw();
+        bersihkanAlamat();
+        return tampilLogin("Link reset tidak valid. Klik \"Lupa password?\" untuk minta link baru.");
+      }
+      const u = await api.sesi();
+      if (modeReset) return;
+      if (u) return masukAplikasi(u);
+      tampilLogin();
+    } catch (e) {
+      tampilLogin(pesanError(e));
+    }
+  }
+
+  $("formLogin").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = $("btnLogin"); btn.disabled = true; btn.textContent = "Memeriksa…";
+    $("loginErr").textContent = "";
+    try {
+      if (!api) { await muatSkrip(SUPABASE_JS); const k = konfigAktif(); api = apiSupabase(k.SUPABASE_URL, k.SUPABASE_ANON_KEY); }
+      const u = await api.masuk($("lEmail").value.trim(), $("lPass").value);
+      $("lPass").value = "";
+      await masukAplikasi(u);
+    } catch (err) {
+      $("loginErr").textContent = pesanError(err);
+      if (api && !api.demo) { try { await api.keluar(); } catch (e2) {} }
+    } finally { btn.disabled = false; btn.textContent = "Masuk"; }
+  });
+
+  $("btnSimpanKonfig").addEventListener("click", () => {
+    const url = $("cUrl").value.trim().replace(/\/+$/, ""), key = $("cKey").value.trim();
+    if (!/^https:\/\/.+\.supabase\.co$/.test(url) || key.length < 40) {
+      toast("Project URL harus seperti https://xxxx.supabase.co dan key tidak boleh kosong.", true); return;
+    }
+    lsSet("kwmasuda.konfig", { SUPABASE_URL: url, SUPABASE_ANON_KEY: key });
+    api = null; tampilLogin();
+  });
+  $("btnDemo").addEventListener("click", () => { lsSet("kwmasuda.demo", true); mulai(); });
+  $("linkKeluarDemo").addEventListener("click", (e) => { e.preventDefault(); lsDel("kwmasuda.demo"); location.href = location.pathname; });
+
+  $("btnKeluar").addEventListener("click", async () => {
+    if (api.demo) { lsDel("kwmasuda.demo"); location.href = location.pathname; return; }
+    await api.keluar(); user = null; docs = []; penyewa = [];
+    tampilLogin("Anda sudah keluar.");
+  });
+
+  mulai();
+})();
+</script>
+</body>
+</html>
